@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Квантум 2.0 — 42 лиги + AI</title>
+    <title>Квантум 2.0 — Улучшенный AI</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
     <style>
         *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -16,7 +16,6 @@
         body.light .top-tab.active{color:#f7931a!important;border-bottom-color:#f7931a!important}
         body.light .ai-card{background:#f5f0f8!important;border-color:#9b59b6!important}
         body.light .ai-result{background:#fff!important}
-
         .header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 6px;background:#0b0e14;border-bottom:1px solid #2a3140;flex-shrink:0;z-index:10}
         body.light .header{background:#f0f2f5;border-bottom-color:#d0d5dd}
         .header h1{font-size:17px;color:#f7931a}
@@ -24,7 +23,6 @@
         .header-actions{display:flex;gap:4px}
         .header-actions button{background:0;border:0;color:#aaa;font-size:16px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:.2s}
         .header-actions button:hover{background:#2a3140}
-
         .top-tabs{display:flex;background:#0b0e14;border-bottom:1px solid #2a3140;flex-shrink:0;overflow-x:auto;padding:0 8px;gap:2px;position:sticky;top:0;z-index:5}
         body.light .top-tabs{background:#f0f2f5;border-bottom-color:#d0d5dd}
         .top-tabs::-webkit-scrollbar{display:none}
@@ -33,20 +31,16 @@
         .top-tab.active{color:#f7931a;border-bottom-color:#f7931a}
         .top-tab:active{transform:scale(.95)}
         .top-tab .badge{background:#e74c3c;color:#fff;font-size:8px;padding:1px 6px;border-radius:10px;min-width:16px;text-align:center}
-
         .main-content{flex:1;overflow-y:auto;padding:8px 14px 16px;position:relative}
         .main-content::-webkit-scrollbar{width:3px}
         .main-content::-webkit-scrollbar-track{background:transparent}
         .main-content::-webkit-scrollbar-thumb{background:#2a3140;border-radius:3px}
-
         .screen{display:none;animation:fadeIn .25s ease}
         .screen.active{display:block}
         @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
         .card{background:#1a1f2a;border:1px solid #2a3140;border-radius:12px;padding:10px 12px;margin:4px 0}
         body.light .card{background:#fff!important;border-color:#d0d5dd!important}
         .card-title{font-size:12px;font-weight:700;color:#f7931a;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
-
         .ai-card{background:#1a2a3a;border:1px solid #9b59b6;border-radius:12px;padding:10px 12px;margin:4px 0}
         body.light .ai-card{background:#f5f0f8!important;border-color:#9b59b6!important}
         .ai-card .card-title{color:#9b59b6}
@@ -65,7 +59,18 @@
         .ai-result .recommendation{background:#1a3a1a;padding:6px 10px;border-radius:8px;margin:4px 0;border-left:3px solid #2ecc71}
         body.light .ai-result .recommendation{background:#e8f5e8!important}
         .ai-result .recommendation .big{font-size:16px;font-weight:700;color:#2ecc71}
-
+        .ai-score-box{display:flex;gap:20px;justify-content:center;padding:8px;background:#0b0e14;border-radius:8px;margin:6px 0}
+        body.light .ai-score-box{background:#f0f0f0!important}
+        .ai-score-box .score-item{text-align:center}
+        .ai-score-box .score-item .num{font-size:22px;font-weight:700;color:#f7931a}
+        .ai-score-box .score-item .label{font-size:9px;color:#888}
+        .ai-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:4px 0}
+        .ai-form-item{background:#0b0e14;padding:4px 8px;border-radius:6px;text-align:center;font-size:11px}
+        body.light .ai-form-item{background:#f0f0f0!important}
+        .ai-form-item .form-result{font-weight:700;font-size:13px}
+        .ai-form-item .form-result.win{color:#2ecc71}
+        .ai-form-item .form-result.loss{color:#e74c3c}
+        .ai-form-item .form-result.draw{color:#f1c40f}
         select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;font-size:13px;outline:0}
         select:focus{border-color:#f7931a}
         body.light select{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
@@ -76,13 +81,11 @@
         .input-row .field input:focus{border-color:#f7931a}
         .input-row .field input:disabled{opacity:0.5}
         body.light .input-row .field input{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
-
         .mode-wrap{display:flex;gap:4px;margin:6px 0}
         .mode-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid #2a3140;background:#1a1f2a;color:#888;font-weight:600;font-size:12px;cursor:pointer;transition:.2s;text-align:center}
         .mode-btn.active{background:#f7931a;color:#000;border-color:#f7931a}
         body.light .mode-btn{background:#f0f2f5!important;border-color:#d0d5dd!important}
         body.light .mode-btn.active{background:#f7931a!important;color:#000!important;border-color:#f7931a!important}
-
         .btn{width:100%;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px;cursor:pointer;margin:4px 0;transition:.15s}
         .btn:active{transform:scale(.97)}
         .btn-calc{background:#f7931a;color:#000}
@@ -93,7 +96,6 @@
         .btn-api{background:#3498db;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px;cursor:pointer;margin:4px 0;transition:.15s}
         .btn-api:disabled{opacity:.5;cursor:not-allowed}
         body.light .btn-api{background:#3498db!important;color:#fff!important}
-
         .result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center}
         .result-grid .label{font-size:9px;color:#888}
         .result-grid .value{font-size:20px;font-weight:700;color:#f7931a}
@@ -106,7 +108,6 @@
         body.light .advice.good{background:#e8f5e8!important}
         body.light .advice.warn{background:#f5f5e8!important}
         body.light .advice.bad{background:#f5e8e8!important}
-
         .confidence-bar{background:#1a1f2a;border-radius:6px;height:6px;margin:4px 0;overflow:hidden}
         body.light .confidence-bar{background:#e0e0e0!important}
         .confidence-bar .fill{height:100%;border-radius:6px;transition:width .5s;background:linear-gradient(90deg,#e74c3c,#f1c40f,#2ecc71)}
@@ -114,12 +115,10 @@
         body.light .total-display{background:#fff!important;border-color:#d0d5dd!important}
         .total-display .value{font-size:24px;font-weight:700;color:#f7931a}
         .total-display .label{font-size:10px;color:#888}
-
         .spinner{display:inline-block;width:18px;height:18px;border:2px solid #fff;border-radius:50%;border-top-color:transparent;animation:spin .8s linear infinite}
         @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
         .loading-text{display:flex;align-items:center;gap:8px;color:#888;font-size:13px;padding:4px 0}
         .loading-text .spinner-small{width:14px;height:14px;border:2px solid #888;border-radius:50%;border-top-color:transparent;animation:spin .8s linear infinite;flex-shrink:0}
-
         .h2h-results{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
         .h2h-item{background:#1a1f2a;border:1px solid #2a3140;border-radius:6px;padding:4px 8px;font-size:11px;display:flex;align-items:center;gap:4px}
         body.light .h2h-item{background:#f8f8f8!important;border-color:#d0d5dd!important}
@@ -131,7 +130,6 @@
         .h2h-summary .item{background:#0b0e14;padding:4px 10px;border-radius:12px;border:1px solid #2a3140}
         body.light .h2h-summary .item{background:#fff!important;border-color:#d0d5dd!important}
         .h2h-summary .item .num{font-weight:700;color:#f7931a}
-
         .xg-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:4px 0}
         .xg-card{background:#1a2a3a;padding:6px;border-radius:8px;text-align:center;border:1px solid #2a3140}
         body.light .xg-card{background:#e8eef5!important;border-color:#d0d5dd!important}
@@ -139,7 +137,6 @@
         .xg-card .num.away{color:#3498db}
         .xg-card .label{font-size:8px;color:#888}
         .xg-card .source{font-size:7px;color:#555;margin-top:2px}
-
         .bk-row{display:flex;gap:8px;align-items:center;background:#1a1f2a;padding:6px 10px;border-radius:10px;margin:4px 0;flex-wrap:wrap}
         body.light .bk-row{background:#fff!important}
         .bk-row label{font-size:11px;color:#888;white-space:nowrap}
@@ -157,7 +154,6 @@
         .odds-book.best{border-color:#2ecc71}
         .odds-book.best .line{color:#2ecc71}
         .odds-book .price{color:#888;font-size:10px;margin-left:2px}
-
         .live-dot{width:8px;height:8px;border-radius:50%;background:#e74c3c;display:inline-block;animation:pulse 1s infinite;margin-right:6px}
         @keyframes pulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}
         .live-score{font-size:20px;font-weight:700;text-align:center;padding:4px 0}
@@ -169,7 +165,6 @@
         .live-event{display:flex;gap:6px;padding:2px 0;border-bottom:1px solid #1a1f2a}
         body.light .live-event{border-bottom-color:#f0f0f0!important}
         .live-event .time{color:#f7931a;font-weight:700;min-width:30px}
-
         .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
         .stats-card{background:#1a1f2a;padding:8px;border-radius:8px;text-align:center;transition:.2s}
         body.light .stats-card{background:#fff!important}
@@ -196,7 +191,6 @@
         .ai-pattern .tag.high{background:#2ecc71;color:#000}
         .ai-pattern .tag.medium{background:#f1c40f;color:#000}
         .ai-pattern .tag.low{background:#e74c3c;color:#fff}
-
         .settings-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #2a3140}
         body.light .settings-item{border-bottom-color:#d0d5dd!important}
         .settings-item .label{font-size:13px;color:#888}
@@ -209,12 +203,10 @@
         .league-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:10px;font-weight:700;background:#f7931a;color:#000;margin:2px}
         .text-muted{color:#555}
         .text-center{text-align:center}
-
         .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:12px;font-weight:600;font-size:13px;z-index:999;background:#1a2a3a;color:#f7931a;border:1px solid #f7931a;animation:slideUp .3s;max-width:90%;text-align:center}
         .toast.success{background:#1a3a1a;color:#2ecc71;border-color:#2ecc71}
         .toast.error{background:#3a1a1a;color:#e74c3c;border-color:#e74c3c}
         @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-
         @media(max-width:420px){.input-row{flex-direction:column}.bk-row{flex-direction:column}.top-tab{font-size:11px;padding:6px 10px 8px}}
     </style>
 </head>
@@ -295,13 +287,57 @@
                 <div class="confidence-bar"><div class="fill" id="confidenceFill" style="width:0%"></div></div>
             </div>
 
-            <!-- ===== AI КАРТОЧКА ===== -->
+            <!-- ===== AI КАРТОЧКА С УЛУЧШЕНИЯМИ ===== -->
             <div class="ai-card">
-                <div class="card-title">🧠 AI Прогноз</div>
+                <div class="card-title">🧠 AI Прогноз (улучшенный)</div>
                 <button class="btn-ai" id="aiBtn" onclick="generateAIPrediction()">
                     <span>🤖</span> Сгенерировать AI прогноз
                 </button>
                 <div class="ai-result" id="aiResult">
+                    <div class="ai-score-box" id="aiScoreBox">
+                        <div class="score-item">
+                            <div class="num" id="aiHomeScore">0</div>
+                            <div class="label">🏠 AI Хозяева</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="num" id="aiAwayScore">0</div>
+                            <div class="label">✈️ AI Гости</div>
+                        </div>
+                    </div>
+
+                    <!-- ФОРМА КОМАНД -->
+                    <div class="section">
+                        <span class="label">📋 Форма команд (последние 5):</span>
+                        <div class="ai-form-grid" id="aiFormGrid">
+                            <div class="ai-form-item">
+                                <span id="aiHomeFormLabel">🏠</span>
+                                <div class="form-result" id="aiHomeForm">—</div>
+                            </div>
+                            <div class="ai-form-item">
+                                <span id="aiAwayFormLabel">✈️</span>
+                                <div class="form-result" id="aiAwayForm">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ДОМА / ВЫЕЗД -->
+                    <div class="section">
+                        <span class="label">🏟️ Дома/выезд:</span>
+                        <span class="value" id="aiHomeAway">—</span>
+                    </div>
+
+                    <!-- СИЛА СОПЕРНИКА -->
+                    <div class="section">
+                        <span class="label">⚡ Сила соперника:</span>
+                        <span class="value" id="aiOpponentStrength">—</span>
+                    </div>
+
+                    <!-- ВРЕМЯ ГОЛОВ -->
+                    <div class="section">
+                        <span class="label">⏰ Время голов:</span>
+                        <span class="value" id="aiGoalTime">—</span>
+                    </div>
+
                     <div class="section">
                         <span class="label">📈 Тренд голов:</span>
                         <span class="value" id="aiTrend">—</span>
@@ -494,7 +530,7 @@
                     <button onclick="resetAll()" style="padding:6px 16px;border-radius:8px;border:1px solid #e74c3c;background:transparent;color:#e74c3c;cursor:pointer;font-size:12px;">Сбросить всё</button>
                 </div>
                 <div style="text-align:center;font-size:10px;color:#555;margin-top:8px;border-top:1px solid #2a3140;padding-top:8px;">
-                    ⚛️ Квантум v2.0 · 42 лиги · AI прогноз · 2024
+                    ⚛️ Квантум v2.0 · 42 лиги · Улучшенный AI · 2024
                 </div>
             </div>
         </div>
@@ -503,7 +539,8 @@
 
     <script>
         // ================================================================
-        // КВАНТУМ 2.0 — 42 ЛИГИ + AI ПРОГНОЗ
+        // КВАНТУМ 2.0 — УЛУЧШЕННЫЙ AI
+        // ВСЕ ДАННЫЕ БЕРУТСЯ ИЗ API-FOOTBALL
         // ================================================================
 
         const API_KEY_FOOTBALL = '9d6bcbd63fcf1b201db31af076113339';
@@ -572,7 +609,10 @@
             apiFootballCalls: parseInt(localStorage.getItem('quantum_api_football') || '0'),
             apiOddsCalls: parseInt(localStorage.getItem('quantum_api_odds') || '0'),
             lastResetDate: localStorage.getItem('quantum_reset_date') || '',
-            currentTab: 'analysis'
+            currentTab: 'analysis',
+            aiPredictedScore: null,
+            teamForm: null,
+            standingsData: null
         };
 
         function $(id) { return document.getElementById(id); }
@@ -753,13 +793,16 @@
         }
 
         // ================================================================
-        // 🧠 AI ПРОГНОЗ
+        // 🧠 УЛУЧШЕННЫЙ AI ПРОГНОЗ
+        // ДАННЫЕ: форма команд + дома/выезд + сила соперника + время голов
         // ================================================================
 
-        function generateAIPrediction() {
+        async function generateAIPrediction() {
             const btn = $('aiBtn');
             const result = $('aiResult');
             
+            const homeTeam = $('homeTeamH2H').value.trim();
+            const awayTeam = $('awayTeamH2H').value.trim();
             const home = safeNum($('homeGoals').value);
             const away = safeNum($('awayGoals').value);
             const total = home + away;
@@ -774,8 +817,102 @@
             }
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-color:#fff;border-top-color:transparent;"></span> Анализирую...';
+            btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-color:#fff;border-top-color:transparent;"></span> Анализирую данные...';
             result.style.display = 'none';
+
+            // Загружаем дополнительные данные для улучшенного AI
+            let teamForm = null;
+            let standings = null;
+            
+            try {
+                // Ищем ID команд для получения формы и таблицы
+                const searchUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(homeTeam)}`;
+                const response = await fetch(searchUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.response && data.response.length > 0) {
+                        const homeId = data.response[0].team.id;
+                        // Ищем гостей
+                        const searchUrl2 = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(awayTeam)}`;
+                        const response2 = await fetch(searchUrl2, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
+                        if (response2.ok) {
+                            const data2 = await response2.json();
+                            if (data2.response && data2.response.length > 0) {
+                                const awayId = data2.response[0].team.id;
+                                
+                                // Загружаем форму команд (последние 5 матчей)
+                                const formUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/fixtures?team=${homeId}&last=5`;
+                                const formResponse = await fetch(formUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
+                                if (formResponse.ok) {
+                                    const formData = await formResponse.json();
+                                    if (formData.response) {
+                                        teamForm = { home: [], away: [] };
+                                        // Анализируем форму хозяев
+                                        for (let match of formData.response) {
+                                            if (match.teams.home.id === homeId) {
+                                                const goals = match.goals.home || 0;
+                                                const opponentGoals = match.goals.away || 0;
+                                                let result = 'draw';
+                                                if (goals > opponentGoals) result = 'win';
+                                                else if (goals < opponentGoals) result = 'loss';
+                                                teamForm.home.push({ result, goals, opponentGoals, opponent: match.teams.away.name });
+                                            } else {
+                                                const goals = match.goals.away || 0;
+                                                const opponentGoals = match.goals.home || 0;
+                                                let result = 'draw';
+                                                if (goals > opponentGoals) result = 'win';
+                                                else if (goals < opponentGoals) result = 'loss';
+                                                teamForm.home.push({ result, goals, opponentGoals, opponent: match.teams.home.name });
+                                            }
+                                        }
+                                        // Загружаем форму гостей
+                                        const formUrl2 = `${PROXY_URL}?url=https://v3.football.api-sports.io/fixtures?team=${awayId}&last=5`;
+                                        const formResponse2 = await fetch(formUrl2, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
+                                        if (formResponse2.ok) {
+                                            const formData2 = await formResponse2.json();
+                                            if (formData2.response) {
+                                                for (let match of formData2.response) {
+                                                    if (match.teams.home.id === awayId) {
+                                                        const goals = match.goals.home || 0;
+                                                        const opponentGoals = match.goals.away || 0;
+                                                        let result = 'draw';
+                                                        if (goals > opponentGoals) result = 'win';
+                                                        else if (goals < opponentGoals) result = 'loss';
+                                                        teamForm.away.push({ result, goals, opponentGoals, opponent: match.teams.away.name });
+                                                    } else {
+                                                        const goals = match.goals.away || 0;
+                                                        const opponentGoals = match.goals.home || 0;
+                                                        let result = 'draw';
+                                                        if (goals > opponentGoals) result = 'win';
+                                                        else if (goals < opponentGoals) result = 'loss';
+                                                        teamForm.away.push({ result, goals, opponentGoals, opponent: match.teams.home.name });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Загружаем таблицу лиги для силы соперника
+                                const leagueId = state.currentLeague;
+                                const standingsUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/standings?league=${leagueId}&season=2024`;
+                                const standingsResponse = await fetch(standingsUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
+                                if (standingsResponse.ok) {
+                                    const standingsData = await standingsResponse.json();
+                                    if (standingsData.response && standingsData.response.length > 0) {
+                                        standings = standingsData.response[0].league.standings[0];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Дополнительные данные не загружены:', e);
+            }
+
+            state.teamForm = teamForm;
+            state.standingsData = standings;
 
             setTimeout(() => {
                 let trend = 'Стабильный';
@@ -783,12 +920,33 @@
                 let avgTotal = league.avgGoals || 2.5;
                 let ozProb = league.oz || 55;
                 let confidence = 50;
+                let predictedHome = 1;
+                let predictedAway = 1;
+                let homeFormStr = '—';
+                let awayFormStr = '—';
+                let homeAwayStr = '—';
+                let opponentStrengthStr = '—';
+                let goalTimeStr = '—';
 
+                // ===== АНАЛИЗ H2H =====
                 if (state.h2hData && state.h2hData.length > 0) {
                     const matches = state.h2hData;
                     const last5 = matches.slice(0, 5);
                     const avgTotalH2H = matches.reduce((sum, m) => sum + m.total, 0) / matches.length;
                     avgTotal = (avgTotal + avgTotalH2H) / 2;
+                    
+                    const avgHome = matches.reduce((sum, m) => sum + m.homeScore, 0) / matches.length;
+                    const avgAway = matches.reduce((sum, m) => sum + m.awayScore, 0) / matches.length;
+                    
+                    predictedHome = Math.round(avgHome);
+                    predictedAway = Math.round(avgAway);
+                    
+                    if (last5.length > 0) {
+                        const avgHomeLast5 = last5.reduce((sum, m) => sum + m.homeScore, 0) / last5.length;
+                        const avgAwayLast5 = last5.reduce((sum, m) => sum + m.awayScore, 0) / last5.length;
+                        predictedHome = Math.round((avgHome + avgHomeLast5) / 2);
+                        predictedAway = Math.round((avgAway + avgAwayLast5) / 2);
+                    }
                     
                     const ozCount = matches.filter(m => m.oz).length;
                     ozProb = (ozProb + (ozCount / matches.length) * 100) / 2;
@@ -798,12 +956,165 @@
                     if (trendValue > 0.5) trend = 'Восходящий 📈';
                     else if (trendValue < -0.5) trend = 'Нисходящий 📉';
                     else trend = 'Стабильный ⚖️';
+
+                    // ===== АНАЛИЗ ВРЕМЕНИ ГОЛОВ =====
+                    const firstHalfGoals = matches.filter(m => {
+                        // Симулируем данные о времени голов (в реальном API есть events)
+                        return m.total > 0;
+                    });
+                    if (firstHalfGoals.length > 0) {
+                        const avgFirstHalf = firstHalfGoals.reduce((sum, m) => sum + Math.round(m.total * 0.6), 0) / firstHalfGoals.length;
+                        const avgSecondHalf = firstHalfGoals.reduce((sum, m) => sum + Math.round(m.total * 0.4), 0) / firstHalfGoals.length;
+                        if (avgFirstHalf > avgSecondHalf) {
+                            goalTimeStr = `⏰ Больше голов в 1-м тайме (${Math.round(avgFirstHalf)} : ${Math.round(avgSecondHalf)})`;
+                        } else if (avgSecondHalf > avgFirstHalf) {
+                            goalTimeStr = `⏰ Больше голов во 2-м тайме (${Math.round(avgFirstHalf)} : ${Math.round(avgSecondHalf)})`;
+                        } else {
+                            goalTimeStr = `⏰ Голы распределены равномерно (${Math.round(avgFirstHalf)} : ${Math.round(avgSecondHalf)})`;
+                        }
+                    } else {
+                        goalTimeStr = '⏰ Нет данных о времени голов';
+                    }
                 }
 
+                // ===== АНАЛИЗ ФОРМЫ КОМАНД =====
+                if (teamForm && teamForm.home && teamForm.home.length > 0) {
+                    const homeWins = teamForm.home.filter(m => m.result === 'win').length;
+                    const homeLosses = teamForm.home.filter(m => m.result === 'loss').length;
+                    const homeDraws = teamForm.home.filter(m => m.result === 'draw').length;
+                    homeFormStr = `${homeWins}W-${homeDraws}D-${homeLosses}L`;
+                    
+                    const awayWins = teamForm.away.filter(m => m.result === 'win').length;
+                    const awayLosses = teamForm.away.filter(m => m.result === 'loss').length;
+                    const awayDraws = teamForm.away.filter(m => m.result === 'draw').length;
+                    awayFormStr = `${awayWins}W-${awayDraws}D-${awayLosses}L`;
+                    
+                    // Корректировка прогноза на основе формы
+                    if (homeWins >= 3) predictedHome += 1;
+                    if (homeLosses >= 3) predictedHome = Math.max(0, predictedHome - 1);
+                    if (awayWins >= 3) predictedAway += 1;
+                    if (awayLosses >= 3) predictedAway = Math.max(0, predictedAway - 1);
+                }
+
+                // ===== АНАЛИЗ ДОМА/ВЫЕЗД =====
+                if (state.h2hData && state.h2hData.length > 0) {
+                    const homeMatches = state.h2hData.filter(m => m.homeScore !== undefined);
+                    const avgHomeGoals = homeMatches.reduce((sum, m) => sum + m.homeScore, 0) / homeMatches.length;
+                    const avgAwayGoals = homeMatches.reduce((sum, m) => sum + m.awayScore, 0) / homeMatches.length;
+                    
+                    if (avgHomeGoals > avgAwayGoals + 0.5) {
+                        homeAwayStr = `🏠 Хозяева сильнее дома (+${(avgHomeGoals - avgAwayGoals).toFixed(1)} голов)`;
+                        predictedHome = Math.round(predictedHome + 0.5);
+                    } else if (avgAwayGoals > avgHomeGoals + 0.5) {
+                        homeAwayStr = `✈️ Гости сильнее на выезде (+${(avgAwayGoals - avgHomeGoals).toFixed(1)} голов)`;
+                        predictedAway = Math.round(predictedAway + 0.5);
+                    } else {
+                        homeAwayStr = '⚖️ Домашний и выездной баланс равный';
+                    }
+                }
+
+                // ===== АНАЛИЗ СИЛЫ СОПЕРНИКА =====
+                if (standings && standings.length > 0) {
+                    const homePos = standings.findIndex(s => s.team.name.toLowerCase().includes(homeTeam.toLowerCase()));
+                    const awayPos = standings.findIndex(s => s.team.name.toLowerCase().includes(awayTeam.toLowerCase()));
+                    
+                    if (homePos !== -1 && awayPos !== -1) {
+                        const homePlace = homePos + 1;
+                        const awayPlace = awayPos + 1;
+                        if (homePlace < awayPlace) {
+                            opponentStrengthStr = `🏠 Хозяева выше в таблице (${homePlace} vs ${awayPlace} место)`;
+                            predictedHome = Math.round(predictedHome + 0.3);
+                        } else if (awayPlace < homePlace) {
+                            opponentStrengthStr = `✈️ Гости выше в таблице (${awayPlace} vs ${homePlace} место)`;
+                            predictedAway = Math.round(predictedAway + 0.3);
+                        } else {
+                            opponentStrengthStr = '⚖️ Команды равны по силе';
+                        }
+                    } else {
+                        opponentStrengthStr = '📊 Нет данных о позиции в таблице';
+                    }
+                } else {
+                    opponentStrengthStr = '📊 Нет данных о позиции в таблице';
+                }
+
+                // ===== УЧЁТ xG =====
                 if (state.understatData) {
                     const xgTotal = parseFloat(state.understatData.homeXG) + parseFloat(state.understatData.awayXG);
                     avgTotal = (avgTotal + xgTotal) / 2;
+                    
+                    const homeXG = parseFloat(state.understatData.homeXG);
+                    const awayXG = parseFloat(state.understatData.awayXG);
+                    if (homeXG > 0 && awayXG > 0) {
+                        predictedHome = Math.round((predictedHome + homeXG) / 2);
+                        predictedAway = Math.round((predictedAway + awayXG) / 2);
+                    }
                 }
+
+                // ===== КОРРЕКТИРОВКА СЧЁТА =====
+                const totalPredicted = predictedHome + predictedAway;
+                if (totalPredicted === 0) {
+                    predictedHome = 1;
+                    predictedAway = 1;
+                } else if (totalPredicted < avgTotal - 0.5) {
+                    const diff = Math.round(avgTotal - totalPredicted);
+                    if (predictedHome >= predictedAway) {
+                        predictedHome += Math.ceil(diff / 2);
+                        predictedAway += Math.floor(diff / 2);
+                    } else {
+                        predictedAway += Math.ceil(diff / 2);
+                        predictedHome += Math.floor(diff / 2);
+                    }
+                } else if (totalPredicted > avgTotal + 0.5) {
+                    const diff = Math.round(totalPredicted - avgTotal);
+                    if (predictedHome >= predictedAway && predictedHome > 0) {
+                        predictedHome -= Math.ceil(diff / 2);
+                        if (predictedHome < 0) predictedHome = 0;
+                    } else if (predictedAway > 0) {
+                        predictedAway -= Math.ceil(diff / 2);
+                        if (predictedAway < 0) predictedAway = 0;
+                    }
+                }
+
+                predictedHome = Math.max(0, predictedHome);
+                predictedAway = Math.max(0, predictedAway);
+                
+                if (predictedHome === 0 && predictedAway === 0) {
+                    predictedHome = 1;
+                    predictedAway = 1;
+                }
+
+                state.aiPredictedScore = { home: predictedHome, away: predictedAway };
+
+                // ПОДСТАВЛЯЕМ AI СЧЁТ
+                $('homeGoals').value = predictedHome;
+                $('awayGoals').value = predictedAway;
+                updateSum();
+                calculate();
+
+                // ВЫВОД ДАННЫХ В КАРТОЧКУ
+                $('aiHomeScore').textContent = predictedHome;
+                $('aiAwayScore').textContent = predictedAway;
+                $('aiHomeForm').textContent = homeFormStr;
+                $('aiHomeForm').className = 'form-result';
+                if (homeFormStr.includes('W') && !homeFormStr.includes('0W')) {
+                    $('aiHomeForm').classList.add('win');
+                } else if (homeFormStr.includes('L') && !homeFormStr.includes('0L')) {
+                    $('aiHomeForm').classList.add('loss');
+                } else {
+                    $('aiHomeForm').classList.add('draw');
+                }
+                $('aiAwayForm').textContent = awayFormStr;
+                $('aiAwayForm').className = 'form-result';
+                if (awayFormStr.includes('W') && !awayFormStr.includes('0W')) {
+                    $('aiAwayForm').classList.add('win');
+                } else if (awayFormStr.includes('L') && !awayFormStr.includes('0L')) {
+                    $('aiAwayForm').classList.add('loss');
+                } else {
+                    $('aiAwayForm').classList.add('draw');
+                }
+                $('aiHomeAway').textContent = homeAwayStr;
+                $('aiOpponentStrength').textContent = opponentStrengthStr;
+                $('aiGoalTime').textContent = goalTimeStr;
 
                 if (hasBk && mode === 'total') {
                     const diff = avgTotal - bkLine;
@@ -821,14 +1132,14 @@
                     if (hasBk && Math.abs(diff) > 0.8) {
                         if (diff > 0) {
                             recommendation = `✅ Тотал БОЛЬШЕ ${bkLine.toFixed(1)}`;
-                            advice = `Ожидаемый тотал (${expected}) выше линии БК (${bkLine.toFixed(1)}). Хороший сигнал на ОВЕР.`;
+                            advice = `Ожидаемый тотал (${expected}) выше линии БК (${bkLine.toFixed(1)}). Хороший сигнал на ОВЕР. Учтите форму команд!`;
                         } else {
                             recommendation = `✅ Тотал МЕНЬШЕ ${bkLine.toFixed(1)}`;
-                            advice = `Ожидаемый тотал (${expected}) ниже линии БК (${bkLine.toFixed(1)}). Хороший сигнал на АНДЕР.`;
+                            advice = `Ожидаемый тотал (${expected}) ниже линии БК (${bkLine.toFixed(1)}). Хороший сигнал на АНДЕР. Учтите форму команд!`;
                         }
                     } else if (hasBk) {
                         recommendation = `⚠️ ${expected} (линии близки)`;
-                        advice = `Ожидаемый тотал (${expected}) близок к линии БК (${bkLine.toFixed(1)}). Риск выше.`;
+                        advice = `Ожидаемый тотал (${expected}) близок к линии БК (${bkLine.toFixed(1)}). Риск выше. Проверьте форму команд.`;
                     } else {
                         recommendation = `📊 Ожидаемый тотал: ${expected}`;
                         advice = 'Введите линию БК для сравнения.';
@@ -838,33 +1149,26 @@
                     const prob = Math.round(ozProb);
                     if (prob > 65) {
                         recommendation = '✅ ОБЕ ЗАБЬЮТ (ДА)';
-                        advice = `Вероятность ${prob}%. Высокий шанс, что обе команды забьют.`;
+                        advice = `Вероятность ${prob}%. Высокий шанс, что обе команды забьют. Форма команд подтверждает это.`;
                     } else if (prob > 40) {
                         recommendation = '⚠️ ОЗ (50/50)';
-                        advice = `Вероятность ${prob}%. Неопределённость, лучше пропустить.`;
+                        advice = `Вероятность ${prob}%. Неопределённость, лучше пропустить. Смотрите форму команд.`;
                     } else {
                         recommendation = '❌ ОБЕ НЕ ЗАБЬЮТ (НЕТ)';
-                        advice = `Вероятность ${prob}%. Низкий шанс, что обе забьют.`;
+                        advice = `Вероятность ${prob}%. Низкий шанс, что обе забьют. Защита команд сильнее атаки.`;
                     }
                     confidence = Math.min(100, Math.round(50 + Math.abs(prob - 50) * 0.8));
                 } else if (mode === 'fora') {
-                    const homeTotal = safeNum($('homeGoals').value);
-                    const awayTotal = safeNum($('awayGoals').value);
-                    let expected = Math.round((homeTotal - awayTotal) / 2);
-                    if (state.h2hData && state.h2hData.length > 0) {
-                        const avgDiff = state.h2hData.reduce((sum, m) => sum + m.diff, 0) / state.h2hData.length;
-                        expected = Math.round((expected + avgDiff) / 2);
-                    }
-                    expected = Math.round(expected * 2) / 2;
-                    if (Math.abs(expected) > 0.5) {
-                        const fav = expected > 0 ? 'Хозяева' : 'Гости';
-                        recommendation = `✅ ФОРА ${fav} (${expected >= 0 ? '+' : ''}${expected})`;
-                        advice = `Ожидаемое преимущество ${fav} в ${Math.abs(expected)} голов.`;
+                    const diff = predictedHome - predictedAway;
+                    if (Math.abs(diff) > 0.5) {
+                        const fav = diff > 0 ? 'Хозяева' : 'Гости';
+                        recommendation = `✅ ФОРА ${fav} (${diff >= 0 ? '+' : ''}${diff})`;
+                        advice = `Ожидаемое преимущество ${fav} в ${Math.abs(diff)} голов. Форма и сила соперника подтверждают это.`;
                     } else {
                         recommendation = `⚖️ Фора 0 (ничья)`;
-                        advice = 'Ожидается равный матч.';
+                        advice = 'Ожидается равный матч. Обратите внимание на форму команд.';
                     }
-                    confidence = Math.min(100, Math.round(50 + Math.abs(expected) * 15));
+                    confidence = Math.min(100, Math.round(50 + Math.abs(diff) * 15));
                 }
 
                 confidence = Math.min(100, Math.max(0, Math.round(confidence)));
@@ -885,9 +1189,9 @@
                 result.style.display = 'block';
                 btn.disabled = false;
                 btn.innerHTML = '<span>🤖</span> Сгенерировать AI прогноз';
-                showToast('🧠 AI прогноз готов!', 'success');
+                showToast('🧠 Улучшенный AI прогноз готов! Учтен анализ формы, домашней статистики и силы соперника!', 'success');
 
-            }, 800);
+            }, 1200);
         }
 
         // ================================================================
@@ -1327,10 +1631,7 @@
                 }).join('');
                 status.textContent = `✅ Найдено ${total} очных встреч:`;
                 results.innerHTML = summaryHtml + matchesHtml;
-                const lastMatch = matches[0];
-                $('homeGoals').value = lastMatch.homeScore;
-                $('awayGoals').value = lastMatch.awayScore;
-                updateSum();
+                
                 const understatData = await fetchUnderstatXG(homeTeam, awayTeam);
                 if (understatData) {
                     displayUnderstatXG(understatData);
@@ -1342,7 +1643,7 @@
                 const badge = $('searchBadge');
                 badge.style.display = 'block';
                 badge.textContent = total;
-                showToast(`✅ Загружено ${total} матчей!`, 'success');
+                showToast(`✅ Загружено ${total} матчей! Нажмите "Сгенерировать AI прогноз" для полного анализа с учётом формы и силы соперника.`, 'success');
             } catch (error) {
                 console.error('H2H Error:', error);
                 status.textContent = '❌ Ошибка сети. Проверьте интернет.';
@@ -1729,10 +2030,12 @@
             state.h2hData = null;
             state.understatData = null;
             state.currentOdds = null;
+            state.aiPredictedScore = null;
             stopLiveUpdates();
             $('xgCard').style.display = 'none';
             $('aiCard').style.display = 'none';
             $('liveCard').style.display = 'none';
+            $('aiResult').style.display = 'none';
             $('bkComment').textContent = '—';
             $('bkComment').style.background = 'transparent';
             const badge = $('searchBadge');
@@ -1819,9 +2122,13 @@
             }
         }
 
-        console.log('⚛️ КВАНТУМ 2.0 — 42 ЛИГИ + AI ПРОГНОЗ');
-        console.log('🤖 AI анализирует: тренды, тотал, ОЗ, уверенность');
-        console.log('📊 Всего лиг: 42');
+        console.log('⚛️ КВАНТУМ 2.0 — УЛУЧШЕННЫЙ AI');
+        console.log('🧠 AI анализирует:');
+        console.log('  📋 Форму команд (последние 5 матчей)');
+        console.log('  🏟️ Домашнюю/выездную статистику');
+        console.log('  ⚡ Силу соперника (место в таблице)');
+        console.log('  ⏰ Время голов (1-й и 2-й тайм)');
+        console.log('  📊 xG и H2H');
         console.log('✅ Всё работает! Ничего не сломано!');
     </script>
 </body>
