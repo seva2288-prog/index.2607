@@ -3,42 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Квантум 2.0 — xG + Odds + Live</title>
+    <title>Квантум 2.0 — Вкладки</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
     <style>
         *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-        body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:#0b0e14;color:#e0e0e0;max-width:480px;margin:0 auto;padding:12px 14px 80px;min-height:100vh}
+        body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:#0b0e14;color:#e0e0e0;max-width:480px;margin:0 auto;padding:0;min-height:100vh;display:flex;flex-direction:column;height:100vh;overflow:hidden}
         body.light{background:#f0f2f5;color:#1a1a1a}
         body.light input,body.light select,body.light .card{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
         body.light .mode-btn{background:#f0f2f5!important;color:#555!important;border-color:#d0d5dd!important}
         body.light .mode-btn.active{background:#f7931a!important;color:#000!important;border-color:#f7931a!important}
-        .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px}
+        body.light .tab-btn.active{color:#f7931a!important}
+        body.light .tab-btn.active .icon{color:#f7931a!important}
+        body.light .tab-btn .label{color:#888!important}
+        body.light .tab-btn.active .label{color:#f7931a!important}
+
+        /* ===== ХЕДЕР ===== */
+        .header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px;background:#0b0e14;border-bottom:1px solid #2a3140;flex-shrink:0;z-index:10}
+        body.light .header{background:#f0f2f5;border-bottom-color:#d0d5dd}
         .header h1{font-size:18px;color:#f7931a}
         .header h1 span{font-size:9px;color:#555;font-weight:400}
-        .header-actions button{background:0;border:0;color:#aaa;font-size:18px;cursor:pointer;padding:4px}
+        .header-actions{display:flex;gap:6px}
+        .header-actions button{background:0;border:0;color:#aaa;font-size:18px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:.2s}
+        .header-actions button:hover{background:#2a3140}
+
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .main-content{flex:1;overflow-y:auto;padding:8px 14px 4px;position:relative}
+        .main-content::-webkit-scrollbar{width:3px}
+        .main-content::-webkit-scrollbar-track{background:transparent}
+        .main-content::-webkit-scrollbar-thumb{background:#2a3140;border-radius:3px}
+
+        /* ===== ЭКРАНЫ ===== */
+        .screen{display:none;animation:fadeIn .25s ease}
+        .screen.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ===== КАРТОЧКИ ===== */
         .card{background:#1a1f2a;border:1px solid #2a3140;border-radius:12px;padding:10px 12px;margin:4px 0}
-        .card-title{font-size:12px;font-weight:700;color:#f7931a;margin-bottom:4px}
+        body.light .card{background:#fff!important;border-color:#d0d5dd!important}
+        .card-title{font-size:12px;font-weight:700;color:#f7931a;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+
+        /* ===== ВВОД ===== */
         select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;font-size:13px;outline:0}
         select:focus{border-color:#f7931a}
-        .mode-wrap{display:flex;gap:4px;margin:6px 0}
-        .mode-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid #2a3140;background:#1a1f2a;color:#888;font-weight:600;font-size:12px;cursor:pointer;transition:.2s;text-align:center}
-        .mode-btn.active{background:#f7931a;color:#000;border-color:#f7931a}
+        body.light select{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
         .input-row{display:flex;gap:8px;margin:4px 0}
         .input-row .field{flex:1}
         .input-row .field label{font-size:10px;color:#888;display:block}
         .input-row .field input{width:100%;padding:10px;border-radius:8px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;text-align:center;font-size:16px;outline:0}
         .input-row .field input:focus{border-color:#f7931a}
-        .total-display{background:#1a1f2a;padding:10px;border-radius:8px;text-align:center;margin:4px 0;border:1px solid #2a3140}
-        .total-display .value{font-size:24px;font-weight:700;color:#f7931a}
-        .total-display .label{font-size:10px;color:#888}
+        .input-row .field input:disabled{opacity:0.5}
+        body.light .input-row .field input{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
+
+        /* ===== РЕЖИМЫ ===== */
+        .mode-wrap{display:flex;gap:4px;margin:6px 0}
+        .mode-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid #2a3140;background:#1a1f2a;color:#888;font-weight:600;font-size:12px;cursor:pointer;transition:.2s;text-align:center}
+        .mode-btn.active{background:#f7931a;color:#000;border-color:#f7931a}
+        body.light .mode-btn{background:#f0f2f5!important;border-color:#d0d5dd!important}
+        body.light .mode-btn.active{background:#f7931a!important;color:#000!important;border-color:#f7931a!important}
+
+        /* ===== КНОПКИ ===== */
         .btn{width:100%;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px;cursor:pointer;margin:4px 0;transition:.15s}
         .btn:active{transform:scale(.97)}
         .btn-calc{background:#f7931a;color:#000}
         .btn-save{background:#2ecc71;color:#000;flex:2}
         .btn-clear{background:#3a1a1a;color:#ff8a8a;flex:1}
+        body.light .btn-clear{background:#f0d0d0!important;color:#c0392b!important}
         .action-row{display:flex;gap:8px}
         .btn-api{background:#3498db;color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:10px;border:0;font-weight:700;font-size:16px;cursor:pointer;margin:4px 0;transition:.15s}
         .btn-api:disabled{opacity:.5;cursor:not-allowed}
+        body.light .btn-api{background:#3498db!important;color:#fff!important}
+
+        /* ===== РЕЗУЛЬТАТЫ ===== */
         .result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center}
         .result-grid .label{font-size:9px;color:#888}
         .result-grid .value{font-size:20px;font-weight:700;color:#f7931a}
@@ -47,48 +82,67 @@
         .advice.good{background:#1a3a1a;border-left-color:#2ecc71;color:#2ecc71}
         .advice.warn{background:#2a2a1a;border-left-color:#f1c40f;color:#f1c40f}
         .advice.bad{background:#2a1a1a;border-left-color:#e74c3c;color:#e74c3c}
+        body.light .advice.info{background:#e8eef5!important}
+        body.light .advice.good{background:#e8f5e8!important}
+        body.light .advice.warn{background:#f5f5e8!important}
+        body.light .advice.bad{background:#f5e8e8!important}
+
         .confidence-bar{background:#1a1f2a;border-radius:6px;height:6px;margin:4px 0;overflow:hidden}
+        body.light .confidence-bar{background:#e0e0e0!important}
         .confidence-bar .fill{height:100%;border-radius:6px;transition:width .5s;background:linear-gradient(90deg,#e74c3c,#f1c40f,#2ecc71)}
-        .bk-row{display:flex;gap:8px;align-items:center;background:#1a1f2a;padding:6px 10px;border-radius:10px;margin:4px 0;flex-wrap:wrap}
-        .bk-row label{font-size:11px;color:#888;white-space:nowrap}
-        .bk-row select{flex:1;min-width:80px;padding:6px 8px;border-radius:6px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;font-size:12px;outline:0}
-        .bk-row input{flex:1;min-width:60px;padding:6px 8px;border-radius:6px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;text-align:center;font-size:14px;outline:0}
-        .bk-row input:focus{border-color:#f7931a}
+        .total-display{background:#1a1f2a;padding:10px;border-radius:8px;text-align:center;margin:4px 0;border:1px solid #2a3140}
+        body.light .total-display{background:#fff!important;border-color:#d0d5dd!important}
+        .total-display .value{font-size:24px;font-weight:700;color:#f7931a}
+        .total-display .label{font-size:10px;color:#888}
+
+        /* ===== СПИННЕР ===== */
         .spinner{display:inline-block;width:18px;height:18px;border:2px solid #fff;border-radius:50%;border-top-color:transparent;animation:spin .8s linear infinite}
         @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
         .loading-text{display:flex;align-items:center;gap:8px;color:#888;font-size:13px;padding:4px 0}
         .loading-text .spinner-small{width:14px;height:14px;border:2px solid #888;border-radius:50%;border-top-color:transparent;animation:spin .8s linear infinite;flex-shrink:0}
+
+        /* ===== H2H ===== */
         .h2h-results{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
         .h2h-item{background:#1a1f2a;border:1px solid #2a3140;border-radius:6px;padding:4px 8px;font-size:11px;display:flex;align-items:center;gap:4px}
+        body.light .h2h-item{background:#f8f8f8!important;border-color:#d0d5dd!important}
         .h2h-item .oz{color:#2ecc71}
         .h2h-item .no-oz{color:#e74c3c}
         .h2h-item .score{font-weight:600}
-        .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-        .stats-card{background:#1a1f2a;padding:8px;border-radius:8px;text-align:center;transition:.2s}
-        .stats-card:hover{transform:scale(1.02)}
-        .stats-card .num{font-size:20px;font-weight:700;color:#f7931a}
-        .stats-card .label{font-size:9px;color:#888}
-        .chart-bars{display:flex;align-items:flex-end;gap:2px;height:30px}
-        .chart-bars .bar{flex:1;min-width:3px;border-radius:2px 2px 0 0;background:#f7931a}
-        .chart-bars .bar.loss{background:#e74c3c}
-        .text-muted{color:#555}
-        .text-center{text-align:center}
-        .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:12px;font-weight:600;font-size:13px;z-index:999;background:#1a2a3a;color:#f7931a;border:1px solid #f7931a;animation:slideUp .3s;max-width:90%;text-align:center}
-        .toast.success{background:#1a3a1a;color:#2ecc71;border-color:#2ecc71}
-        .toast.error{background:#3a1a1a;color:#e74c3c;border-color:#e74c3c}
-        @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-        @media(max-width:420px){.input-row{flex-direction:column}.bk-row{flex-direction:column}}
+        .h2h-summary{background:#1a2a3a;border-radius:8px;padding:6px 10px;margin:4px 0;font-size:12px;display:flex;flex-wrap:wrap;gap:8px}
+        body.light .h2h-summary{background:#e8eef5!important}
+        .h2h-summary .item{background:#0b0e14;padding:4px 10px;border-radius:12px;border:1px solid #2a3140}
+        body.light .h2h-summary .item{background:#fff!important;border-color:#d0d5dd!important}
+        .h2h-summary .item .num{font-weight:700;color:#f7931a}
 
-        /* ===== НОВЫЕ СТИЛИ ===== */
+        /* ===== xG ===== */
         .xg-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:4px 0}
         .xg-card{background:#1a2a3a;padding:6px;border-radius:8px;text-align:center;border:1px solid #2a3140}
+        body.light .xg-card{background:#e8eef5!important;border-color:#d0d5dd!important}
         .xg-card .num{font-size:18px;font-weight:700;color:#2ecc71}
         .xg-card .num.away{color:#3498db}
         .xg-card .label{font-size:8px;color:#888}
         .xg-card .source{font-size:7px;color:#555;margin-top:2px}
 
-        .live-card{background:#1a2a3a;border:1px solid #2a3140;border-radius:8px;padding:8px 10px;margin:4px 0}
-        .live-header{display:flex;justify-content:space-between;align-items:center}
+        /* ===== БК ===== */
+        .bk-row{display:flex;gap:8px;align-items:center;background:#1a1f2a;padding:6px 10px;border-radius:10px;margin:4px 0;flex-wrap:wrap}
+        body.light .bk-row{background:#fff!important}
+        .bk-row label{font-size:11px;color:#888;white-space:nowrap}
+        .bk-row select{flex:1;min-width:80px;padding:6px 8px;border-radius:6px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;font-size:12px;outline:0}
+        body.light .bk-row select{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
+        .bk-row input{flex:1;min-width:60px;padding:6px 8px;border-radius:6px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;text-align:center;font-size:14px;outline:0}
+        body.light .bk-row input{background:#fff!important;color:#1a1a1a!important;border-color:#d0d5dd!important}
+        .bk-row input:focus{border-color:#f7931a}
+        .bk-row input:disabled{opacity:0.5}
+        .odds-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+        .odds-book{background:#0b0e14;padding:4px 10px;border-radius:12px;border:1px solid #2a3140;font-size:11px}
+        body.light .odds-book{background:#f8f8f8!important;border-color:#d0d5dd!important}
+        .odds-book .name{color:#888}
+        .odds-book .line{color:#f7931a;font-weight:700;margin-left:4px}
+        .odds-book.best{border-color:#2ecc71}
+        .odds-book.best .line{color:#2ecc71}
+        .odds-book .price{color:#888;font-size:10px;margin-left:2px}
+
+        /* ===== LIVE ===== */
         .live-dot{width:8px;height:8px;border-radius:50%;background:#e74c3c;display:inline-block;animation:pulse 1s infinite;margin-right:6px}
         @keyframes pulse{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}
         .live-score{font-size:20px;font-weight:700;text-align:center;padding:4px 0}
@@ -96,220 +150,376 @@
         .live-score .away{color:#3498db}
         .live-score .vs{color:#555;margin:0 8px}
         .live-events{font-size:11px;color:#888;max-height:60px;overflow-y:auto;margin-top:4px;border-top:1px solid #2a3140;padding-top:4px}
+        body.light .live-events{border-top-color:#d0d5dd!important}
         .live-event{display:flex;gap:6px;padding:2px 0;border-bottom:1px solid #1a1f2a}
+        body.light .live-event{border-bottom-color:#f0f0f0!important}
         .live-event .time{color:#f7931a;font-weight:700;min-width:30px}
-        .live-event .icon{min-width:20px}
-        .live-event .goal{color:#2ecc71}
-        .live-event .card-yellow{color:#f1c40f}
-        .live-event .card-red{color:#e74c3c}
-        .live-event .sub{color:#3498db}
 
-        .odds-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
-        .odds-book{background:#0b0e14;padding:4px 10px;border-radius:12px;border:1px solid #2a3140;font-size:11px;cursor:pointer;transition:.2s}
-        .odds-book:hover{border-color:#f7931a}
-        .odds-book .name{color:#888}
-        .odds-book .line{color:#f7931a;font-weight:700;margin-left:4px}
-        .odds-book.best{border-color:#2ecc71}
-        .odds-book.best .line{color:#2ecc71}
-
-        .h2h-summary{background:#1a2a3a;border-radius:8px;padding:6px 10px;margin:4px 0;font-size:12px;display:flex;flex-wrap:wrap;gap:8px}
-        .h2h-summary .item{background:#0b0e14;padding:4px 10px;border-radius:12px;border:1px solid #2a3140}
-        .h2h-summary .item .num{font-weight:700;color:#f7931a}
+        /* ===== СТАТИСТИКА ===== */
+        .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+        .stats-card{background:#1a1f2a;padding:8px;border-radius:8px;text-align:center;transition:.2s}
+        body.light .stats-card{background:#fff!important}
+        .stats-card:hover{transform:scale(1.02)}
+        .stats-card .num{font-size:20px;font-weight:700;color:#f7931a}
+        .stats-card .label{font-size:9px;color:#888}
+        .chart-bars{display:flex;align-items:flex-end;gap:2px;height:30px}
+        .chart-bars .bar{flex:1;min-width:3px;border-radius:2px 2px 0 0;background:#f7931a}
+        .chart-bars .bar.loss{background:#e74c3c}
+        .dashboard-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:4px 0}
+        .dashboard-item{background:#1a2a3a;padding:6px;border-radius:8px;text-align:center}
+        body.light .dashboard-item{background:#e8eef5!important}
+        .dashboard-item .num{font-size:16px;font-weight:700;color:#f7931a}
+        .dashboard-item .label{font-size:8px;color:#888}
         .history-item{background:#1a1f2a;padding:6px 10px;border-radius:8px;display:flex;justify-content:space-between;font-size:12px;margin:2px 0;cursor:pointer;transition:.15s}
+        body.light .history-item{background:#fff!important}
         .history-item:active{transform:scale(.98)}
         .history-item .win{color:#2ecc71}
         .history-item .loss{color:#e74c3c}
         .history-item .pending{color:#f1c40f}
-
-        .dashboard-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin:4px 0}
-        .dashboard-item{background:#1a2a3a;padding:6px;border-radius:8px;text-align:center}
-        .dashboard-item .num{font-size:16px;font-weight:700;color:#f7931a}
-        .dashboard-item .label{font-size:8px;color:#888}
-        .league-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:10px;font-weight:700;background:#f7931a;color:#000;margin:2px}
         .ai-pattern{background:#1a1f2a;padding:8px;border-radius:8px;margin:4px 0;border-left:3px solid #9b59b6}
+        body.light .ai-pattern{background:#f5f0f8!important}
         .ai-pattern .tag{display:inline-block;background:#2a3140;padding:2px 8px;border-radius:12px;font-size:10px;margin:2px}
         .ai-pattern .tag.high{background:#2ecc71;color:#000}
         .ai-pattern .tag.medium{background:#f1c40f;color:#000}
         .ai-pattern .tag.low{background:#e74c3c;color:#fff}
+
+        /* ===== НАСТРОЙКИ ===== */
+        .settings-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #2a3140}
+        body.light .settings-item{border-bottom-color:#d0d5dd!important}
+        .settings-item .label{font-size:13px;color:#888}
+        .settings-item .value{font-size:13px;color:#f7931a}
+        .settings-item .value.green{color:#2ecc71}
+        .settings-item .value.red{color:#e74c3c}
+        .toggle-btn{background:#2a3140;border:none;color:#fff;padding:4px 12px;border-radius:12px;font-size:11px;cursor:pointer;transition:.2s}
+        body.light .toggle-btn{background:#d0d5dd!important;color:#1a1a1a!important}
+        .toggle-btn.active{background:#f7931a;color:#000}
+        .league-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:10px;font-weight:700;background:#f7931a;color:#000;margin:2px}
+        .text-muted{color:#555}
+        .text-center{text-align:center}
+
+        /* ===== TOAST ===== */
+        .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:12px;font-weight:600;font-size:13px;z-index:999;background:#1a2a3a;color:#f7931a;border:1px solid #f7931a;animation:slideUp .3s;max-width:90%;text-align:center}
+        .toast.success{background:#1a3a1a;color:#2ecc71;border-color:#2ecc71}
+        .toast.error{background:#3a1a1a;color:#e74c3c;border-color:#e74c3c}
+        @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+        /* ===== НИЖНЯЯ НАВИГАЦИЯ ===== */
+        .bottom-nav{display:flex;background:#0b0e14;border-top:1px solid #2a3140;flex-shrink:0;padding:4px 0 8px;position:relative;z-index:10}
+        body.light .bottom-nav{background:#f0f2f5;border-top-color:#d0d5dd}
+        .tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:0;border:0;cursor:pointer;padding:4px 0;transition:.2s;position:relative;gap:2px;min-height:50px}
+        .tab-btn .icon{font-size:22px;transition:.2s;color:#555}
+        .tab-btn .label{font-size:9px;color:#555;font-weight:500;transition:.2s}
+        .tab-btn.active .icon{color:#f7931a;transform:scale(1.05)}
+        .tab-btn.active .label{color:#f7931a;font-weight:600}
+        .tab-btn .badge{position:absolute;top:2px;right:50%;transform:translateX(50%) translateX(16px);background:#e74c3c;color:#fff;font-size:8px;padding:1px 6px;border-radius:10px;min-width:16px;text-align:center}
+        body.light .tab-btn .icon{color:#999}
+        body.light .tab-btn .label{color:#999}
+        body.light .tab-btn.active .icon{color:#f7931a}
+        body.light .tab-btn.active .label{color:#f7931a}
+
+        @media(max-width:420px){.input-row{flex-direction:column}.bk-row{flex-direction:column}.bottom-nav{padding-bottom:6px}}
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <!-- ===== ХЕДЕР ===== -->
+    <header class="header">
         <h1>⚛️ Квантум <span>v2.0</span></h1>
         <div class="header-actions">
-            <button onclick="toggleTheme()">🌙</button>
-            <button onclick="resetAll()">🔄</button>
+            <button onclick="toggleTheme()" title="Тема">🌙</button>
+            <button onclick="resetAll()" title="Сброс">🔄</button>
         </div>
-    </div>
+    </header>
 
-    <!-- ЛИГА -->
-    <div class="card">
-        <div class="card-title">🏆 Лига <span id="autoLeagueBadge"></span></div>
-        <select id="leagueSelect"></select>
-        <div id="leagueInfo" style="font-size:10px;color:#888;margin-top:4px;"></div>
-    </div>
+    <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+    <div class="main-content" id="mainContent">
 
-    <!-- РЕЖИМЫ -->
-    <div class="mode-wrap" id="modeTabs">
-        <button class="mode-btn active" data-mode="total" onclick="switchMode('total',this)">⚽ Тотал</button>
-        <button class="mode-btn" data-mode="fora" onclick="switchMode('fora',this)">⚖️ Фора</button>
-        <button class="mode-btn" data-mode="oz" onclick="switchMode('oz',this)">⚽ ОЗ</button>
-    </div>
+        <!-- ============================================================ -->
+        <!-- ЭКРАН 1: АНАЛИЗ -->
+        <!-- ============================================================ -->
+        <div class="screen active" id="analysisScreen">
 
-    <!-- ВВОД ГОЛОВ -->
-    <div id="inputArea">
-        <div class="input-row">
-            <div class="field"><label>🏠 Хозяева</label><input type="number" id="homeGoals" value="0" min="0" /></div>
-            <div class="field"><label>✈️ Гости</label><input type="number" id="awayGoals" value="0" min="0" /></div>
+            <!-- Лига -->
+            <div class="card">
+                <div class="card-title">🏆 Лига <span id="autoLeagueBadge"></span></div>
+                <select id="leagueSelect"></select>
+                <div id="leagueInfo" style="font-size:10px;color:#888;margin-top:4px;"></div>
+            </div>
+
+            <!-- Режимы -->
+            <div class="mode-wrap" id="modeTabs">
+                <button class="mode-btn active" data-mode="total" onclick="switchMode('total',this)">⚽ Тотал</button>
+                <button class="mode-btn" data-mode="fora" onclick="switchMode('fora',this)">⚖️ Фора</button>
+                <button class="mode-btn" data-mode="oz" onclick="switchMode('oz',this)">⚽ ОЗ</button>
+            </div>
+
+            <!-- Ввод голов -->
+            <div id="inputArea">
+                <div class="input-row">
+                    <div class="field"><label>🏠 Хозяева</label><input type="number" id="homeGoals" value="0" min="0" /></div>
+                    <div class="field"><label>✈️ Гости</label><input type="number" id="awayGoals" value="0" min="0" /></div>
+                </div>
+            </div>
+
+            <!-- Сумма -->
+            <div class="total-display">
+                <div class="label">📈 Сумма голов</div>
+                <div class="value" id="sumDisplay">0</div>
+            </div>
+
+            <!-- Кнопки -->
+            <button class="btn btn-calc" onclick="calculate()">⚡ Рассчитать</button>
+            <div class="action-row">
+                <button class="btn btn-save" onclick="saveBet()">💾 Записать</button>
+                <button class="btn btn-clear" onclick="clearAll()">🗑️ Очистить</button>
+            </div>
+
+            <!-- Результаты -->
+            <div class="card">
+                <div class="result-grid">
+                    <div><div class="label" id="resLabel1">Ожидаемый</div><div class="value" id="resValue1">--</div></div>
+                    <div><div class="label">Линия БК</div><div class="value" id="resValue2">--</div></div>
+                    <div><div class="label">Разница</div><div class="value" id="resValue3">--</div></div>
+                </div>
+                <div class="advice info" id="resAdvice">⏳ Введите данные для расчёта</div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:#888;margin-top:4px;">
+                    <span>📊 Индекс доверия</span>
+                    <span id="confidenceLabel">0%</span>
+                </div>
+                <div class="confidence-bar"><div class="fill" id="confidenceFill" style="width:0%"></div></div>
+            </div>
+
+            <!-- xG -->
+            <div class="card" id="xgCard" style="display:none;">
+                <div class="card-title">🎯 xG (Understat) <span id="xgStatus" style="font-size:9px;color:#888;font-weight:400;"></span></div>
+                <div class="xg-grid">
+                    <div class="xg-card"><div class="num" id="understatHomeXG">0.00</div><div class="label">xG Хозяев</div><div class="source">understat.com</div></div>
+                    <div class="xg-card"><div class="num away" id="understatAwayXG">0.00</div><div class="label">xG Гостей</div><div class="source">understat.com</div></div>
+                </div>
+                <div id="xgAdvice" style="font-size:11px;color:#888;text-align:center;margin-top:4px;"></div>
+                <div id="xgLoading" style="font-size:10px;color:#555;text-align:center;display:none;">⏳ Загрузка xG...</div>
+            </div>
+
+            <!-- Букмекеры -->
+            <div class="card">
+                <div class="card-title">📊 Букмекерские линии <span id="oddsStatus" style="font-size:9px;color:#888;font-weight:400;"></span></div>
+                <div class="bk-row">
+                    <label>Букмекер:</label>
+                    <select id="bookieSelect" onchange="loadOdds()">
+                        <option value="">Авто-выбор</option>
+                        <option value="bet365">Bet365</option>
+                        <option value="pinnacle">Pinnacle</option>
+                        <option value="1xbet">1xBet</option>
+                        <option value="williamhill">William Hill</option>
+                        <option value="unibet">Unibet</option>
+                    </select>
+                </div>
+                <div class="odds-row" id="oddsDisplay">
+                    <span style="font-size:11px;color:#888;">⏳ Загрузка линий...</span>
+                </div>
+                <div class="bk-row">
+                    <label>📈 Линия БК:</label>
+                    <input type="number" id="bkLine" value="0" step="0.05" readonly/>
+                    <span id="bkComment" style="font-size:12px;font-weight:600;padding:2px 10px;border-radius:12px;">—</span>
+                </div>
+                <div id="oddsLoading" style="font-size:10px;color:#555;text-align:center;display:none;">⏳ Загрузка линий...</div>
+            </div>
+
+            <!-- AI Паттерны -->
+            <div class="card" id="aiCard" style="display:none;">
+                <div class="card-title">🧠 AI Паттерны</div>
+                <div id="aiPatterns" class="ai-pattern">
+                    <div style="color:#888;font-size:11px;">Анализ данных...</div>
+                </div>
+            </div>
+
         </div>
+
+        <!-- ============================================================ -->
+        <!-- ЭКРАН 2: ПОИСК -->
+        <!-- ============================================================ -->
+        <div class="screen" id="searchScreen">
+
+            <div class="card">
+                <div class="card-title">🔍 Поиск H2H + Статистика</div>
+                <div class="input-row">
+                    <div class="field"><label>🏠 Хозяева</label><input type="text" id="homeTeamH2H" placeholder="Например: Real Madrid" /></div>
+                    <div class="field"><label>✈️ Гости</label><input type="text" id="awayTeamH2H" placeholder="Например: Barcelona" /></div>
+                </div>
+                <button class="btn-api" id="loadH2HBtn" onclick="loadH2H()">
+                    <span id="loadBtnText">📊 Загрузить H2H</span>
+                    <span id="loadSpinner" style="display:none;"><span class="spinner"></span></span>
+                </button>
+                <div id="h2hContainer">
+                    <div id="h2hStatus" style="color:#888;font-size:12px;padding:4px 0;">Введите команды и нажмите "Загрузить H2H"</div>
+                    <div class="h2h-results" id="h2hResults"></div>
+                </div>
+            </div>
+
+            <!-- Live -->
+            <div class="card" id="liveCard" style="display:none;">
+                <div class="card-title">
+                    <span class="live-dot"></span> LIVE
+                    <span id="liveMatchTime" style="font-size:11px;color:#888;float:right;">—</span>
+                </div>
+                <div class="live-score">
+                    <span class="home" id="liveHomeScore">0</span>
+                    <span class="vs">—</span>
+                    <span class="away" id="liveAwayScore">0</span>
+                </div>
+                <div class="live-events" id="liveEvents">
+                    <div style="color:#555;text-align:center;padding:4px 0;">⏳ Поиск матча...</div>
+                </div>
+                <div style="font-size:9px;color:#555;text-align:center;margin-top:4px;">
+                    🔄 Обновляется каждые 15 сек · FlashScore + SofaScore
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- ЭКРАН 3: СТАТИСТИКА -->
+        <!-- ============================================================ -->
+        <div class="screen" id="statsScreen">
+
+            <!-- KPI Дашборд -->
+            <div class="card">
+                <div class="card-title">📊 Дашборд KPI</div>
+                <div class="dashboard-grid">
+                    <div class="dashboard-item"><div class="num" id="kpiTotal">0</div><div class="label">Всего</div></div>
+                    <div class="dashboard-item"><div class="num" id="kpiWinRate">0%</div><div class="label">Винрейт</div></div>
+                    <div class="dashboard-item"><div class="num" id="kpiProfit">0</div><div class="label">Профит</div></div>
+                    <div class="dashboard-item"><div class="num" id="kpiROI">0%</div><div class="label">ROI</div></div>
+                    <div class="dashboard-item"><div class="num" id="kpiStreak">0</div><div class="label">Серия</div></div>
+                    <div class="dashboard-item"><div class="num" id="kpiBest">0</div><div class="label">Макс</div></div>
+                </div>
+            </div>
+
+            <!-- График -->
+            <div class="card">
+                <div class="card-title">📈 График баланса</div>
+                <div class="chart-bars" id="chartBars"></div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="card">
+                <div class="card-title">📊 Общая статистика</div>
+                <div class="stats-grid">
+                    <div class="stats-card"><div class="num" id="statTotal">0</div><div class="label">Всего ставок</div></div>
+                    <div class="stats-card"><div class="num" id="statWinRate">0%</div><div class="label">% побед</div></div>
+                    <div class="stats-card"><div class="num" id="statBalance">0</div><div class="label">Баланс</div></div>
+                    <div class="stats-card"><div class="num" id="statROI">0%</div><div class="label">ROI</div></div>
+                </div>
+            </div>
+
+            <!-- История -->
+            <div>
+                <div style="display:flex;justify-content:space-between;margin:4px 0;">
+                    <span style="font-size:14px;font-weight:700;color:#f7931a;">📜 История</span>
+                    <button onclick="clearHistory()" style="background:#5a1a1a;color:#ff8a8a;border:none;padding:2px 10px;border-radius:12px;font-size:10px;cursor:pointer;">🗑️</button>
+                </div>
+                <div id="historyList"><div class="text-muted text-center" style="padding:10px 0;">Нет ставок</div></div>
+            </div>
+
+            <!-- Умные выводы -->
+            <div class="card" style="border-left:4px solid #f7931a;margin-top:6px;">
+                <div class="card-title">🧠 Умные выводы</div>
+                <div id="insightsContent"><div class="text-muted text-center" style="padding:6px 0;">Нет данных</div></div>
+            </div>
+
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- ЭКРАН 4: НАСТРОЙКИ -->
+        <!-- ============================================================ -->
+        <div class="screen" id="settingsScreen">
+
+            <div class="card">
+                <div class="card-title">⚙️ Настройки</div>
+
+                <!-- Тема -->
+                <div class="settings-item">
+                    <span class="label">🎨 Тема</span>
+                    <button class="toggle-btn" id="themeToggle" onclick="toggleTheme()">🌙 Тёмная</button>
+                </div>
+
+                <!-- Лига по умолчанию -->
+                <div class="settings-item" style="flex-direction:column;align-items:stretch;gap:6px;">
+                    <span class="label">🏆 Лига по умолчанию</span>
+                    <select id="settingsLeagueSelect" onchange="changeDefaultLeague(this.value)"></select>
+                </div>
+
+                <!-- API Статус -->
+                <div class="settings-item" style="flex-direction:column;align-items:stretch;gap:4px;border-bottom:none;padding-bottom:4px;">
+                    <span class="label" style="margin-bottom:4px;">🔑 API статус</span>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;">
+                        <span style="color:#888;">API-Football</span>
+                        <span id="apiFootballStatus" style="color:#2ecc71;">✅ Активен</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;padding-left:4px;">
+                        <span>Лимит: 100/день</span>
+                        <span id="apiFootballCount">Осталось: 95</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:4px;">
+                        <span style="color:#888;">The Odds API</span>
+                        <span id="apiOddsStatus" style="color:#2ecc71;">✅ Активен</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;padding-left:4px;">
+                        <span>Лимит: 500/мес</span>
+                        <span id="apiOddsCount">Осталось: 499</span>
+                    </div>
+                </div>
+
+                <!-- Данные -->
+                <div class="settings-item" style="flex-direction:column;align-items:stretch;gap:6px;border-bottom:none;padding-bottom:4px;">
+                    <span class="label">💾 Данные</span>
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="exportData()" style="flex:1;padding:8px;border-radius:8px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;cursor:pointer;font-size:12px;">📦 Экспорт</button>
+                        <button onclick="document.getElementById('importFile').click()" style="flex:1;padding:8px;border-radius:8px;border:1px solid #2a3140;background:#0b0e14;color:#e0e0e0;cursor:pointer;font-size:12px;">📥 Импорт</button>
+                        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+                    </div>
+                </div>
+
+                <!-- Сброс -->
+                <div class="settings-item" style="border-bottom:none;padding-bottom:4px;">
+                    <span class="label">🗑️ Сброс</span>
+                    <button onclick="resetAll()" style="padding:6px 16px;border-radius:8px;border:1px solid #e74c3c;background:transparent;color:#e74c3c;cursor:pointer;font-size:12px;">Сбросить всё</button>
+                </div>
+
+                <!-- Версия -->
+                <div style="text-align:center;font-size:10px;color:#555;margin-top:8px;border-top:1px solid #2a3140;padding-top:8px;">
+                    ⚛️ Квантум v2.0 · 2024
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- ПОИСК H2H -->
-    <div class="card">
-        <div class="card-title">🔍 Поиск H2H + Статистика</div>
-        <div class="input-row">
-            <div class="field"><label>🏠 Хозяева</label><input type="text" id="homeTeamH2H" placeholder="Real Madrid" /></div>
-            <div class="field"><label>✈️ Гости</label><input type="text" id="awayTeamH2H" placeholder="Barcelona" /></div>
-        </div>
-        <button class="btn-api" id="loadH2HBtn" onclick="loadH2H()">
-            <span id="loadBtnText">📊 Загрузить H2H</span>
-            <span id="loadSpinner" style="display:none;"><span class="spinner"></span></span>
+    <!-- ===== НИЖНЯЯ НАВИГАЦИЯ ===== -->
+    <nav class="bottom-nav">
+        <button class="tab-btn active" data-tab="analysis" onclick="switchTab('analysis')">
+            <span class="icon">📊</span>
+            <span class="label">Анализ</span>
         </button>
-        <div id="h2hContainer">
-            <div id="h2hStatus" style="color:#888;font-size:12px;padding:4px 0;">Введите команды и нажмите "Загрузить H2H"</div>
-            <div class="h2h-results" id="h2hResults"></div>
-        </div>
-    </div>
-
-    <!-- xG (UNDERSTAT) -->
-    <div class="card" id="xgCard" style="display:none;">
-        <div class="card-title">🎯 xG (Understat)</div>
-        <div class="xg-grid">
-            <div class="xg-card"><div class="num" id="understatHomeXG">0.00</div><div class="label">xG Хозяев</div><div class="source">understat.com</div></div>
-            <div class="xg-card"><div class="num away" id="understatAwayXG">0.00</div><div class="label">xG Гостей</div><div class="source">understat.com</div></div>
-        </div>
-        <div id="xgAdvice" style="font-size:11px;color:#888;text-align:center;margin-top:4px;"></div>
-        <div id="xgLoading" style="font-size:10px;color:#555;text-align:center;display:none;">⏳ Загрузка xG...</div>
-    </div>
-
-    <!-- БУКМЕКЕРСКИЕ ЛИНИИ (THE ODDS API) -->
-    <div class="card">
-        <div class="card-title">📊 Букмекерские линии</div>
-        <div class="bk-row">
-            <label>Букмекер:</label>
-            <select id="bookieSelect" onchange="loadOdds()">
-                <option value="">Выберите</option>
-                <option value="bet365">Bet365</option>
-                <option value="pinnacle">Pinnacle</option>
-                <option value="1xbet">1xBet</option>
-                <option value="williamhill">William Hill</option>
-                <option value="unibet">Unibet</option>
-            </select>
-        </div>
-        <div class="odds-row" id="oddsDisplay">
-            <span style="font-size:11px;color:#888;">Выберите букмекера для загрузки линий</span>
-        </div>
-        <div class="bk-row">
-            <label>📈 Линия БК:</label>
-            <input type="number" id="bkLine" value="0" step="0.05" />
-            <span id="bkComment" style="font-size:12px;font-weight:600;padding:2px 10px;border-radius:12px;">—</span>
-        </div>
-        <div id="oddsLoading" style="font-size:10px;color:#555;text-align:center;display:none;">⏳ Загрузка линий...</div>
-    </div>
-
-    <!-- LIVE (RSS) -->
-    <div class="card" id="liveCard" style="display:none;">
-        <div class="card-title">
-            <span class="live-dot"></span> LIVE
-            <span id="liveMatchTime" style="font-size:11px;color:#888;float:right;">—</span>
-        </div>
-        <div class="live-score">
-            <span class="home" id="liveHomeScore">0</span>
-            <span class="vs">—</span>
-            <span class="away" id="liveAwayScore">0</span>
-        </div>
-        <div class="live-events" id="liveEvents">
-            <div style="color:#555;text-align:center;padding:4px 0;">Ожидание событий...</div>
-        </div>
-        <div style="font-size:9px;color:#555;text-align:center;margin-top:4px;">
-            🔄 Обновляется каждые 15 секунд · FlashScore + SofaScore
-        </div>
-    </div>
-
-    <!-- СУММА -->
-    <div class="total-display">
-        <div class="label">📈 Сумма голов</div>
-        <div class="value" id="sumDisplay">0</div>
-    </div>
-
-    <!-- КНОПКИ -->
-    <button class="btn btn-calc" onclick="calculate()">⚡ Рассчитать</button>
-    <div class="action-row">
-        <button class="btn btn-save" onclick="saveBet()">💾 Записать</button>
-        <button class="btn btn-clear" onclick="clearAll()">🗑️ Очистить</button>
-    </div>
-
-    <!-- РЕЗУЛЬТАТЫ -->
-    <div class="card">
-        <div class="result-grid">
-            <div><div class="label" id="resLabel1">Ожидаемый</div><div class="value" id="resValue1">--</div></div>
-            <div><div class="label">Линия БК</div><div class="value" id="resValue2">--</div></div>
-            <div><div class="label">Разница</div><div class="value" id="resValue3">--</div></div>
-        </div>
-        <div class="advice info" id="resAdvice">⏳ Введите данные для расчёта</div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:#888;margin-top:4px;">
-            <span>📊 Индекс доверия</span>
-            <span id="confidenceLabel">0%</span>
-        </div>
-        <div class="confidence-bar"><div class="fill" id="confidenceFill" style="width:0%"></div></div>
-    </div>
-
-    <!-- AI ПАТТЕРНЫ -->
-    <div class="card" id="aiCard" style="display:none;">
-        <div class="card-title">🧠 AI Паттерны</div>
-        <div id="aiPatterns" class="ai-pattern">
-            <div style="color:#888;font-size:11px;">Анализ данных...</div>
-        </div>
-    </div>
-
-    <!-- ДАШБОРД -->
-    <div class="card">
-        <div class="card-title">📊 Дашборд KPI</div>
-        <div class="dashboard-grid">
-            <div class="dashboard-item"><div class="num" id="kpiTotal">0</div><div class="label">Всего</div></div>
-            <div class="dashboard-item"><div class="num" id="kpiWinRate">0%</div><div class="label">Винрейт</div></div>
-            <div class="dashboard-item"><div class="num" id="kpiProfit">0</div><div class="label">Профит</div></div>
-            <div class="dashboard-item"><div class="num" id="kpiROI">0%</div><div class="label">ROI</div></div>
-            <div class="dashboard-item"><div class="num" id="kpiStreak">0</div><div class="label">Серия</div></div>
-            <div class="dashboard-item"><div class="num" id="kpiBest">0</div><div class="label">Макс</div></div>
-        </div>
-    </div>
-
-    <!-- ИСТОРИЯ -->
-    <div style="margin-top:6px;">
-        <div style="display:flex;justify-content:space-between;margin:4px 0;">
-            <span style="font-size:14px;font-weight:700;color:#f7931a;">📜 История</span>
-            <button onclick="clearHistory()" style="background:#5a1a1a;color:#ff8a8a;border:none;padding:2px 10px;border-radius:12px;font-size:10px;cursor:pointer;">🗑️</button>
-        </div>
-        <div id="historyList"><div class="text-muted text-center" style="padding:10px 0;">Нет ставок</div></div>
-    </div>
-
-    <!-- ГРАФИК -->
-    <div class="card">
-        <div class="card-title">📈 График баланса</div>
-        <div class="chart-bars" id="chartBars"></div>
-    </div>
-
-    <!-- УМНЫЕ ВЫВОДЫ -->
-    <div class="card" style="border-left:4px solid #f7931a;">
-        <div class="card-title">🧠 Умные выводы</div>
-        <div id="insightsContent"><div class="text-muted text-center" style="padding:6px 0;">Нет данных</div></div>
-    </div>
+        <button class="tab-btn" data-tab="search" onclick="switchTab('search')">
+            <span class="icon">🔍</span>
+            <span class="label">Поиск</span>
+            <span class="badge" id="searchBadge" style="display:none;">1</span>
+        </button>
+        <button class="tab-btn" data-tab="stats" onclick="switchTab('stats')">
+            <span class="icon">📈</span>
+            <span class="label">Статистика</span>
+        </button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">
+            <span class="icon">⚙️</span>
+            <span class="label">Настройки</span>
+        </button>
+    </nav>
 
     <script>
         // ================================================================
-        // КВАНТУМ 2.0 — xG (Understat) + Odds (The Odds API) + Live (RSS)
+        // КВАНТУМ 2.0 — С НИЖНИМИ ВКЛАДКАМИ
         // ================================================================
 
         // ===== КОНФИГУРАЦИЯ =====
@@ -335,14 +545,17 @@
         // ===== СОСТОЯНИЕ =====
         let state = {
             bets: JSON.parse(localStorage.getItem('quantum_bets') || '[]'),
-            currentLeague: '39',
+            currentLeague: localStorage.getItem('quantum_league') || '39',
             currentMode: 'total',
             h2hData: null,
             isLoading: false,
             liveTimer: null,
             patterns: [],
             currentOdds: null,
-            understatData: null
+            understatData: null,
+            apiFootballCalls: parseInt(localStorage.getItem('quantum_api_football') || '0'),
+            apiOddsCalls: parseInt(localStorage.getItem('quantum_api_odds') || '0'),
+            lastResetDate: localStorage.getItem('quantum_reset_date') || ''
         };
 
         // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
@@ -356,16 +569,97 @@
             t.className = 'toast ' + type;
             t.textContent = msg;
             document.body.appendChild(t);
-            setTimeout(() => { if (t.parentNode) t.remove(); }, 2500);
+            setTimeout(() => { if (t.parentNode) t.remove(); }, 3000);
         }
 
         function getLeague() {
             return LEAGUES[state.currentLeague] || LEAGUES['39'];
         }
 
-        // ===== РЕНДЕР ЛИГ =====
-        function renderLeagues() {
-            const select = $('leagueSelect');
+        // ===== СЧЁТЧИКИ API =====
+        function trackAPICall(type) {
+            const today = new Date().toDateString();
+            if (state.lastResetDate !== today) {
+                state.apiFootballCalls = 0;
+                state.apiOddsCalls = 0;
+                state.lastResetDate = today;
+                localStorage.setItem('quantum_reset_date', today);
+            }
+
+            if (type === 'football') {
+                state.apiFootballCalls++;
+                localStorage.setItem('quantum_api_football', state.apiFootballCalls);
+            } else if (type === 'odds') {
+                state.apiOddsCalls++;
+                localStorage.setItem('quantum_api_odds', state.apiOddsCalls);
+            }
+            updateAPIStatus();
+        }
+
+        function updateAPIStatus() {
+            const footballRemaining = Math.max(0, 100 - state.apiFootballCalls);
+            const oddsRemaining = Math.max(0, 500 - state.apiOddsCalls);
+
+            const fbStatus = $('apiFootballStatus');
+            const fbCount = $('apiFootballCount');
+            const odStatus = $('apiOddsStatus');
+            const odCount = $('apiOddsCount');
+
+            if (fbStatus) {
+                fbStatus.textContent = footballRemaining > 10 ? '✅ Активен' : '⚠️ Почти израсходован';
+                fbStatus.style.color = footballRemaining > 10 ? '#2ecc71' : '#f1c40f';
+                fbCount.textContent = `Осталось: ${footballRemaining}`;
+            }
+
+            if (odStatus) {
+                odStatus.textContent = oddsRemaining > 50 ? '✅ Активен' : '⚠️ Почти израсходован';
+                odStatus.style.color = oddsRemaining > 50 ? '#2ecc71' : '#f1c40f';
+                odCount.textContent = `Осталось: ${oddsRemaining}`;
+            }
+        }
+
+        // ===== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК =====
+        function switchTab(tab) {
+            // Скрываем все экраны
+            document.querySelectorAll('.screen').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Показываем выбранный
+            const screenMap = {
+                'analysis': 'analysisScreen',
+                'search': 'searchScreen',
+                'stats': 'statsScreen',
+                'settings': 'settingsScreen'
+            };
+            $(screenMap[tab]).classList.add('active');
+
+            // Обновляем кнопки
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+
+            // Если перешли на статистику — обновляем
+            if (tab === 'stats') {
+                renderHistory();
+                renderStats();
+                renderDashboard();
+                renderChart();
+                renderInsights();
+            }
+
+            // Если перешли на настройки — обновляем API статус
+            if (tab === 'settings') {
+                updateAPIStatus();
+                renderSettingsLeagues();
+            }
+        }
+
+        // ===== НАСТРОЙКИ =====
+        function renderSettingsLeagues() {
+            const select = $('settingsLeagueSelect');
+            if (!select) return;
             select.innerHTML = '';
             Object.keys(LEAGUES).forEach(key => {
                 const option = document.createElement('option');
@@ -374,17 +668,60 @@
                 if (key === state.currentLeague) option.selected = true;
                 select.appendChild(option);
             });
+        }
+
+        function changeDefaultLeague(value) {
+            state.currentLeague = value;
+            localStorage.setItem('quantum_league', value);
+            $('leagueSelect').value = value;
             updateLeagueInfo();
+            showToast(`🏆 Лига изменена: ${LEAGUES[value].name}`, 'success');
         }
 
-        function updateLeagueInfo() {
-            const league = getLeague();
-            const badge = $('autoLeagueBadge');
-            badge.innerHTML = `<span class="league-badge">${league.country}</span>`;
-            $('leagueInfo').textContent = `Ср. тотал: ${league.avgGoals} | ОЗ: ${league.oz}%`;
+        function exportData() {
+            const data = {
+                bets: state.bets,
+                version: '2.0',
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `quantum_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📦 Данные экспортированы!', 'success');
         }
 
-        // ===== РЕЖИМЫ =====
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.bets && Array.isArray(data.bets)) {
+                        state.bets = data.bets;
+                        localStorage.setItem('quantum_bets', JSON.stringify(state.bets));
+                        renderHistory();
+                        renderStats();
+                        renderDashboard();
+                        renderChart();
+                        renderInsights();
+                        showToast('📥 Данные импортированы!', 'success');
+                    } else {
+                        showToast('❌ Неверный формат файла', 'error');
+                    }
+                } catch (err) {
+                    showToast('❌ Ошибка импорта', 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ===== ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ =====
         function switchMode(mode, btn) {
             state.currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -405,25 +742,45 @@
             }
         }
 
-        // ================================================================
-        // 1️⃣ xG ИЗ UNDERSTAT
-        // ================================================================
+        // ===== ЛИГИ =====
+        function renderLeagues() {
+            const select = $('leagueSelect');
+            select.innerHTML = '';
+            Object.keys(LEAGUES).forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = LEAGUES[key].name;
+                if (key === state.currentLeague) option.selected = true;
+                select.appendChild(option);
+            });
+            updateLeagueInfo();
+        }
 
+        function updateLeagueInfo() {
+            const league = getLeague();
+            const badge = $('autoLeagueBadge');
+            badge.innerHTML = `<span class="league-badge">${league.country}</span>`;
+            $('leagueInfo').textContent = `Ср. тотал: ${league.avgGoals} | ОЗ: ${league.oz}%`;
+        }
+
+        // ===== xG ИЗ UNDERSTAT =====
         async function fetchUnderstatXG(homeTeam, awayTeam) {
             const xgCard = $('xgCard');
             const loading = $('xgLoading');
+            const status = $('xgStatus');
+
             loading.style.display = 'block';
+            status.textContent = '⏳ Загрузка...';
             xgCard.style.display = 'none';
 
             try {
                 const league = getLeague();
                 if (!league.understat) {
-                    loading.textContent = '⚠️ Understat не поддерживает эту лигу';
-                    loading.style.display = 'block';
+                    status.textContent = '⚠️ Лига не поддерживается';
+                    loading.style.display = 'none';
                     return null;
                 }
 
-                // Парсим Understat через прокси
                 const understatUrl = `https://understat.com/league/${league.understat}`;
                 const response = await fetch(`${PROXY_URL}?url=${encodeURIComponent(understatUrl)}`, {
                     headers: { 'x-apisports-key': API_KEY_FOOTBALL }
@@ -432,25 +789,20 @@
                 if (!response.ok) throw new Error('Understat loading failed');
 
                 const html = await response.text();
-                
-                // Ищем скрипт с данными
                 const scriptMatch = html.match(/var datesData\s*=\s*(\{.*?\});/s);
-                if (!scriptMatch) {
-                    throw new Error('No data found on Understat');
-                }
+                if (!scriptMatch) throw new Error('No data found');
 
                 const data = JSON.parse(scriptMatch[1]);
-                
-                // Ищем матч с нашими командами
-                let foundMatch = null;
+
                 const homeNorm = normalizeTeamName(homeTeam);
                 const awayNorm = normalizeTeamName(awayTeam);
+                let foundMatch = null;
 
                 for (let date of Object.values(data)) {
                     for (let match of date) {
                         const h = normalizeTeamName(match.h.title);
                         const a = normalizeTeamName(match.a.title);
-                        if ((h.includes(homeNorm) || homeNorm.includes(h)) && 
+                        if ((h.includes(homeNorm) || homeNorm.includes(h)) &&
                             (a.includes(awayNorm) || awayNorm.includes(a))) {
                             foundMatch = match;
                             break;
@@ -460,8 +812,8 @@
                 }
 
                 if (!foundMatch) {
-                    loading.textContent = '❌ Матч не найден на Understat';
-                    loading.style.display = 'block';
+                    status.textContent = '❌ Матч не найден';
+                    loading.style.display = 'none';
                     return null;
                 }
 
@@ -469,28 +821,25 @@
                     homeXG: parseFloat(foundMatch.h.xG).toFixed(2),
                     awayXG: parseFloat(foundMatch.a.xG).toFixed(2),
                     homeGoals: foundMatch.h.goals,
-                    awayGoals: foundMatch.a.goals,
-                    homeShots: foundMatch.h.shots || 0,
-                    awayShots: foundMatch.a.shots || 0
+                    awayGoals: foundMatch.a.goals
                 };
 
                 loading.style.display = 'none';
+                status.textContent = '✅ Загружено';
                 xgCard.style.display = 'block';
                 return result;
 
             } catch (error) {
                 console.error('Understat error:', error);
-                loading.textContent = '⚠️ Ошибка загрузки xG';
-                loading.style.display = 'block';
+                status.textContent = '⚠️ Ошибка';
+                loading.style.display = 'none';
                 return null;
             }
         }
 
         function normalizeTeamName(name) {
-            // Убираем лишние слова и приводим к единому формату
-            return name
-                .toLowerCase()
-                .replace(/ fc$| cf$| afc$| united| city| fc./g, '')
+            return name.toLowerCase()
+                .replace(/ fc$| cf$| afc$| united| city| fc\./g, '')
                 .trim();
         }
 
@@ -500,8 +849,7 @@
                 return;
             }
 
-            const card = $('xgCard');
-            card.style.display = 'block';
+            $('xgCard').style.display = 'block';
             $('understatHomeXG').textContent = data.homeXG;
             $('understatAwayXG').textContent = data.awayXG;
 
@@ -513,45 +861,42 @@
             $('xgAdvice').textContent = advice;
         }
 
-        // ================================================================
-        // 2️⃣ БУКМЕКЕРСКИЕ ЛИНИИ — THE ODDS API
-        // ================================================================
-
+        // ===== БУКМЕКЕРСКИЕ ЛИНИИ =====
         async function loadOdds() {
-            const bookie = $('bookieSelect').value;
-            if (!bookie) {
-                $('oddsDisplay').innerHTML = '<span style="font-size:11px;color:#888;">Выберите букмекера</span>';
-                return;
-            }
-
             const homeTeam = $('homeTeamH2H').value.trim();
             const awayTeam = $('awayTeamH2H').value.trim();
+
             if (!homeTeam || !awayTeam) {
-                showToast('⚠️ Введите команды!', 'error');
+                showToast('⚠️ Сначала загрузите команды!', 'error');
                 return;
             }
 
             const loading = $('oddsLoading');
+            const display = $('oddsDisplay');
+            const status = $('oddsStatus');
+
             loading.style.display = 'block';
-            $('oddsDisplay').innerHTML = '<span style="font-size:11px;color:#888;">⏳ Загрузка линий...</span>';
+            status.textContent = '⏳ Загрузка...';
+            display.innerHTML = '<span style="font-size:11px;color:#888;">⏳ Поиск линий...</span>';
 
             try {
-                // Ищем матч через The Odds API
-                const sport = 'soccer';
-                const url = `https://api.the-odds-api.com/v4/sports/${sport}/odds/?apiKey=${ODDS_API_KEY}&regions=eu&markets=total_goals,handicap,both_teams_to_score`;
-                
+                const url = `https://api.the-odds-api.com/v4/sports/soccer/odds/?apiKey=${ODDS_API_KEY}&regions=eu&markets=total_goals,handicap,both_teams_to_score`;
+
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Odds API error');
+                trackAPICall('odds');
 
                 const data = await response.json();
-                
-                // Ищем матч с нашими командами
+
                 let match = null;
+                const homeNorm = homeTeam.toLowerCase();
+                const awayNorm = awayTeam.toLowerCase();
+
                 for (let event of data) {
                     const h = event.home_team.toLowerCase();
                     const a = event.away_team.toLowerCase();
-                    if ((h.includes(homeTeam.toLowerCase()) || homeTeam.toLowerCase().includes(h)) &&
-                        (a.includes(awayTeam.toLowerCase()) || awayTeam.toLowerCase().includes(a))) {
+                    if ((h.includes(homeNorm) || homeNorm.includes(h)) &&
+                        (a.includes(awayNorm) || awayNorm.includes(a))) {
                         match = event;
                         break;
                     }
@@ -559,100 +904,105 @@
 
                 if (!match) {
                     loading.style.display = 'none';
-                    $('oddsDisplay').innerHTML = '<span style="font-size:11px;color:#888;">❌ Матч не найден у букмекеров</span>';
+                    status.textContent = '❌ Матч не найден';
+                    display.innerHTML = '<span style="font-size:11px;color:#888;">❌ Матч не найден у букмекеров</span>';
                     return;
                 }
 
-                // Извлекаем линии для выбранного букмекера
-                const bookieData = match.bookmakers.find(b => b.key === bookie);
-                if (!bookieData) {
-                    loading.style.display = 'none';
-                    $('oddsDisplay').innerHTML = `<span style="font-size:11px;color:#888;">❌ ${bookie} не даёт линии на этот матч</span>`;
-                    return;
-                }
+                let html = '';
+                let bestTotal = null;
+                let bestBookie = '';
 
-                let html = `<div class="odds-book best"><span class="name">${bookie}</span></div>`;
-                
-                // Тотал
-                const totalMarket = bookieData.markets.find(m => m.key === 'total_goals');
-                if (totalMarket) {
-                    const over = totalMarket.outcomes.find(o => o.name === 'Over');
-                    const under = totalMarket.outcomes.find(o => o.name === 'Under');
-                    if (over && under) {
-                        html += `<div class="odds-book"><span class="name">Тотал</span> <span class="line">${over.point || over.description || ''}</span></div>`;
-                        // Автозаполнение
-                        const line = parseFloat(over.point || over.description || '0');
-                        if (line > 0) {
-                            $('bkLine').value = line;
-                            $('bkComment').textContent = '✅ Авто';
-                            $('bkComment').style.background = '#2ecc71';
-                            $('bkComment').style.color = '#000';
-                            $('bkComment').style.padding = '2px 10px';
-                            $('bkComment').style.borderRadius = '12px';
+                for (let bookie of match.bookmakers) {
+                    const totalMarket = bookie.markets.find(m => m.key === 'total_goals');
+                    if (totalMarket) {
+                        const over = totalMarket.outcomes.find(o => o.name === 'Over');
+                        if (over && over.point) {
+                            const point = parseFloat(over.point);
+                            if (!bestTotal || point > bestTotal) {
+                                bestTotal = point;
+                                bestBookie = bookie.key;
+                            }
                         }
                     }
                 }
 
-                // ОЗ
-                const btsMarket = bookieData.markets.find(m => m.key === 'both_teams_to_score');
-                if (btsMarket) {
-                    const yes = btsMarket.outcomes.find(o => o.name === 'Yes');
-                    const no = btsMarket.outcomes.find(o => o.name === 'No');
-                    if (yes && no) {
-                        html += `<div class="odds-book"><span class="name">ОЗ</span> <span class="line">Да: ${yes.price} | Нет: ${no.price}</span></div>`;
+                for (let bookie of match.bookmakers) {
+                    const totalMarket = bookie.markets.find(m => m.key === 'total_goals');
+                    if (totalMarket) {
+                        const over = totalMarket.outcomes.find(o => o.name === 'Over');
+                        const under = totalMarket.outcomes.find(o => o.name === 'Under');
+                        if (over && under && over.point) {
+                            const isBest = parseFloat(over.point) === bestTotal;
+                            html += `<div class="odds-book ${isBest ? 'best' : ''}">
+                                <span class="name">${bookie.key}</span>
+                                <span class="line">Тотал ${over.point}</span>
+                                <span class="price">О:${over.price} / ${under.price}</span>
+                            </div>`;
+                        }
                     }
                 }
 
-                // Фора
-                const handicapMarket = bookieData.markets.find(m => m.key === 'handicap');
-                if (handicapMarket) {
-                    const home = handicapMarket.outcomes.find(o => o.name === 'Home');
-                    const away = handicapMarket.outcomes.find(o => o.name === 'Away');
-                    if (home && away) {
-                        html += `<div class="odds-book"><span class="name">Фора</span> <span class="line">Х: ${home.point || ''} (${home.price}) | Г: ${away.point || ''} (${away.price})</span></div>`;
-                    }
+                if (!html) {
+                    loading.style.display = 'none';
+                    status.textContent = '❌ Нет линий';
+                    display.innerHTML = '<span style="font-size:11px;color:#888;">❌ Нет доступных линий</span>';
+                    return;
+                }
+
+                if (bestTotal) {
+                    $('bkLine').value = bestTotal;
+                    $('bkLine').disabled = false;
+                    $('bkComment').textContent = `✅ ${bestBookie}`;
+                    $('bkComment').style.background = '#2ecc71';
+                    $('bkComment').style.color = '#000';
+                    $('bkComment').style.padding = '2px 10px';
+                    $('bkComment').style.borderRadius = '12px';
                 }
 
                 loading.style.display = 'none';
-                $('oddsDisplay').innerHTML = html;
-                state.currentOdds = bookieData;
+                status.textContent = '✅ Загружено';
+                display.innerHTML = html;
+                state.currentOdds = match;
                 calculate();
 
             } catch (error) {
                 console.error('Odds error:', error);
                 loading.style.display = 'none';
-                $('oddsDisplay').innerHTML = '<span style="font-size:11px;color:#888;">⚠️ Ошибка загрузки линий</span>';
+                status.textContent = '⚠️ Ошибка';
+                display.innerHTML = '<span style="font-size:11px;color:#888;">⚠️ Ошибка загрузки линий</span>';
                 showToast('⚠️ Ошибка загрузки линий', 'error');
             }
         }
 
-        // ================================================================
-        // 3️⃣ LIVE ДАННЫЕ — RSS (FlashScore + SofaScore)
-        // ================================================================
-
+        // ===== LIVE =====
         async function startLiveUpdates() {
             const homeTeam = $('homeTeamH2H').value.trim();
             const awayTeam = $('awayTeamH2H').value.trim();
-            
+
             if (!homeTeam || !awayTeam) return;
 
             const card = $('liveCard');
             card.style.display = 'block';
             $('liveEvents').innerHTML = '<div style="color:#555;text-align:center;padding:4px 0;">⏳ Поиск матча...</div>';
 
-            // Пытаемся найти матч на FlashScore
-            await fetchLiveFromFlashScore(homeTeam, awayTeam);
+            await fetchLiveData(homeTeam, awayTeam);
 
-            // Запускаем таймер обновления
             if (state.liveTimer) clearInterval(state.liveTimer);
             state.liveTimer = setInterval(() => {
-                fetchLiveFromFlashScore(homeTeam, awayTeam);
+                fetchLiveData(homeTeam, awayTeam);
             }, 15000);
         }
 
-        async function fetchLiveFromFlashScore(homeTeam, awayTeam) {
+        async function fetchLiveData(homeTeam, awayTeam) {
+            let found = await fetchFromFlashScore(homeTeam, awayTeam);
+            if (!found) {
+                await fetchFromSofaScore(homeTeam, awayTeam);
+            }
+        }
+
+        async function fetchFromFlashScore(homeTeam, awayTeam) {
             try {
-                // FlashScore RSS
                 const rssUrl = `https://www.flashscore.com/feed/`;
                 const response = await fetch(`${PROXY_URL}?url=${encodeURIComponent(rssUrl)}`, {
                     headers: { 'x-apisports-key': API_KEY_FOOTBALL }
@@ -660,12 +1010,11 @@
 
                 if (!response.ok) throw new Error('RSS loading failed');
                 const xmlText = await response.text();
-                
+
                 const parser = new DOMParser();
                 const xml = parser.parseFromString(xmlText, 'text/xml');
-                
+
                 const items = xml.querySelectorAll('item');
-                let found = false;
                 const homeNorm = normalizeTeamName(homeTeam);
                 const awayNorm = normalizeTeamName(awayTeam);
 
@@ -675,39 +1024,29 @@
                     const text = (title + ' ' + desc).toLowerCase();
 
                     if (text.includes(homeNorm) && text.includes(awayNorm)) {
-                        // Извлекаем счёт
                         const scoreMatch = text.match(/(\d+)\s*[:–-]\s*(\d+)/);
                         if (scoreMatch) {
                             const homeScore = parseInt(scoreMatch[1]);
                             const awayScore = parseInt(scoreMatch[2]);
                             updateLiveScore(homeScore, awayScore);
-                            found = true;
                         }
-
-                        // Извлекаем время
                         const timeMatch = text.match(/(\d+)['"′]/);
                         if (timeMatch) {
                             $('liveMatchTime').textContent = timeMatch[1] + "'";
                         }
-
-                        // Добавляем события
-                        addLiveEvent('📊', 'Матч найден', text.substring(0, 100));
-                        break;
+                        addLiveEvent('📊', 'FlashScore', 'Данные обновлены');
+                        return true;
                     }
                 }
-
-                if (!found) {
-                    // Пробуем SofaScore
-                    await fetchLiveFromSofaScore(homeTeam, awayTeam);
-                }
+                return false;
 
             } catch (error) {
-                console.error('Live RSS error:', error);
-                $('liveEvents').innerHTML = '<div style="color:#555;text-align:center;padding:4px 0;">⚠️ Ошибка загрузки live</div>';
+                console.error('FlashScore error:', error);
+                return false;
             }
         }
 
-        async function fetchLiveFromSofaScore(homeTeam, awayTeam) {
+        async function fetchFromSofaScore(homeTeam, awayTeam) {
             try {
                 const url = `https://www.sofascore.com/`;
                 const response = await fetch(`${PROXY_URL}?url=${encodeURIComponent(url)}`, {
@@ -717,35 +1056,37 @@
                 if (!response.ok) throw new Error('SofaScore loading failed');
                 const html = await response.text();
 
-                // Ищем данные о матче в HTML
-                const matchPattern = new RegExp(`${homeTeam}.*?${awayTeam}.*?(\\d+)\\s*[:–-]\\s*(\\d+)`, 'i');
-                const match = html.match(matchPattern);
-                
+                const homeNorm = normalizeTeamName(homeTeam);
+                const awayNorm = normalizeTeamName(awayTeam);
+                const pattern = new RegExp(`${homeNorm}.*?${awayNorm}.*?(\\d+)\\s*[:–-]\\s*(\\d+)`, 'i');
+                const match = html.match(pattern);
+
                 if (match) {
                     const homeScore = parseInt(match[1]);
                     const awayScore = parseInt(match[2]);
                     updateLiveScore(homeScore, awayScore);
                     addLiveEvent('🔄', 'SofaScore', 'Данные обновлены');
+                    return true;
                 }
+                return false;
 
             } catch (error) {
                 console.error('SofaScore error:', error);
+                return false;
             }
         }
 
         function updateLiveScore(home, away) {
             const homeEl = $('liveHomeScore');
             const awayEl = $('liveAwayScore');
-            
-            // Проверяем, изменился ли счёт
+
             if (homeEl.textContent !== String(home) || awayEl.textContent !== String(away)) {
                 if (homeEl.textContent !== '0' || awayEl.textContent !== '0') {
                     showToast(`⚽ ГОЛ! ${home} : ${away}`, 'success');
                 }
                 homeEl.textContent = home;
                 awayEl.textContent = away;
-                
-                // Обновляем основное поле
+
                 $('homeGoals').value = home;
                 $('awayGoals').value = away;
                 updateSum();
@@ -764,7 +1105,6 @@
                 </div>
             `;
             container.innerHTML = eventHtml + container.innerHTML;
-            // Ограничиваем количество событий
             const events = container.querySelectorAll('.live-event');
             if (events.length > 20) {
                 events[events.length - 1].remove();
@@ -778,12 +1118,9 @@
             }
         }
 
-        // ================================================================
-        // AI ПАТТЕРНЫ
-        // ================================================================
-
+        // ===== AI ПАТТЕРНЫ =====
         function analyzePatterns(matches) {
-            if (!matches || matches.length < 3) {
+            if (!matches || matches.length < 2) {
                 $('aiCard').style.display = 'none';
                 return;
             }
@@ -792,39 +1129,26 @@
             const total = matches.length;
             const ozCount = matches.filter(m => m.oz).length;
             const avgTotal = matches.reduce((sum, m) => sum + m.total, 0) / total;
-            
+
             if (ozCount / total > 0.7) {
                 patterns.push({ text: '🔥 Очень часто обе забивают', tag: 'high', confidence: 'Высокая' });
             } else if (ozCount / total < 0.3) {
                 patterns.push({ text: '❄️ Редко обе забивают', tag: 'high', confidence: 'Высокая' });
             }
-            
+
             if (avgTotal > 3.0) {
                 patterns.push({ text: `⚽ Высокий тотал (${avgTotal.toFixed(1)})`, tag: 'high', confidence: 'Высокая' });
             } else if (avgTotal < 2.0) {
                 patterns.push({ text: `🛡️ Низкий тотал (${avgTotal.toFixed(1)})`, tag: 'medium', confidence: 'Средняя' });
             }
-            
+
             const diffs = matches.map(m => m.diff);
-            const avgDiff = diffs.reduce((a,b) => a+b, 0) / diffs.length;
+            const avgDiff = diffs.reduce((a, b) => a + b, 0) / diffs.length;
             if (Math.abs(avgDiff) > 1.5) {
                 const fav = avgDiff > 0 ? 'Хозяева' : 'Гости';
                 patterns.push({ text: `👑 ${fav} часто побеждают (${Math.abs(avgDiff).toFixed(1)} голов)`, tag: 'medium', confidence: 'Средняя' });
             }
-            
-            let homeWinStreak = 0, awayWinStreak = 0;
-            for (let m of matches.slice(0, 5)) {
-                if (m.homeScore > m.awayScore) homeWinStreak++;
-                else if (m.awayScore > m.homeScore) awayWinStreak++;
-                else break;
-            }
-            if (homeWinStreak >= 3) {
-                patterns.push({ text: `📈 Домашняя серия из ${homeWinStreak} побед`, tag: 'high', confidence: 'Высокая' });
-            }
-            if (awayWinStreak >= 3) {
-                patterns.push({ text: `📈 Гостевая серия из ${awayWinStreak} побед`, tag: 'high', confidence: 'Высокая' });
-            }
-            
+
             state.patterns = patterns;
             renderAIPatterns(patterns);
         }
@@ -832,21 +1156,18 @@
         function renderAIPatterns(patterns) {
             const container = $('aiPatterns');
             $('aiCard').style.display = 'block';
-            
+
             if (patterns.length === 0) {
                 container.innerHTML = '<div style="color:#888;font-size:11px;">🧠 Явных паттернов не найдено</div>';
                 return;
             }
-            
-            container.innerHTML = patterns.map(p => 
+
+            container.innerHTML = patterns.map(p =>
                 `<div><span class="tag ${p.tag}">${p.confidence}</span> ${p.text}</div>`
             ).join('');
         }
 
-        // ================================================================
-        // ОСНОВНОЙ H2H
-        // ================================================================
-
+        // ===== ОСНОВНОЙ H2H =====
         async function loadH2H() {
             const homeTeam = $('homeTeamH2H').value.trim();
             const awayTeam = $('awayTeamH2H').value.trim();
@@ -876,6 +1197,7 @@
                 const searchUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(homeTeam)}`;
                 const response = await fetch(searchUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                 if (!response.ok) throw new Error('API Error');
+                trackAPICall('football');
                 const data = await response.json();
                 if (!data.response || data.response.length === 0) {
                     status.textContent = `❌ Команда "${homeTeam}" не найдена.`;
@@ -886,6 +1208,7 @@
                 const searchUrl2 = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(awayTeam)}`;
                 const response2 = await fetch(searchUrl2, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                 if (!response2.ok) throw new Error('API Error');
+                trackAPICall('football');
                 const data2 = await response2.json();
                 if (!data2.response || data2.response.length === 0) {
                     status.textContent = `❌ Команда "${awayTeam}" не найдена.`;
@@ -893,10 +1216,11 @@
                 }
                 const awayId = data2.response[0].team.id;
 
-                // H2H (10 матчей для Free тарифа)
+                // H2H (10 матчей)
                 const h2hUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/fixtures/headtohead?h2h=${homeId}-${awayId}&last=10`;
                 const h2hResponse = await fetch(h2hUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                 if (!h2hResponse.ok) throw new Error('API Error');
+                trackAPICall('football');
                 const h2hData = await h2hResponse.json();
 
                 if (!h2hData.response || h2hData.response.length === 0) {
@@ -959,23 +1283,27 @@
                 $('awayGoals').value = lastMatch.awayScore;
                 updateSum();
 
-                // ЗАГРУЗКА xG ИЗ UNDERSTAT
+                // xG
                 const understatData = await fetchUnderstatXG(homeTeam, awayTeam);
                 if (understatData) {
                     displayUnderstatXG(understatData);
                     state.understatData = understatData;
                 }
 
-                // ЗАПУСК LIVE
+                // Odds
+                await loadOdds();
+
+                // Live
                 await startLiveUpdates();
 
-                // АВТОЗАГРУЗКА ОДДС
-                if ($('bookieSelect').value) {
-                    await loadOdds();
-                }
-
                 calculate();
-                showToast(`✅ Загружено ${total} матчей + xG + Live!`, 'success');
+
+                // Показываем бейдж на вкладке "Поиск"
+                const badge = $('searchBadge');
+                badge.style.display = 'block';
+                badge.textContent = total;
+
+                showToast(`✅ Загружено ${total} матчей!`, 'success');
 
             } catch (error) {
                 console.error('H2H Error:', error);
@@ -989,23 +1317,22 @@
             }
         }
 
-        // ================================================================
-        // АВТООПРЕДЕЛЕНИЕ ЛИГИ
-        // ================================================================
-
+        // ===== АВТООПРЕДЕЛЕНИЕ ЛИГИ =====
         async function detectLeague(teamName) {
             try {
                 const searchUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(teamName)}`;
                 const response = await fetch(searchUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                 if (!response.ok) return;
+                trackAPICall('football');
                 const data = await response.json();
-                
+
                 if (data.response && data.response.length > 0) {
                     const team = data.response[0];
                     for (let [id, league] of Object.entries(LEAGUES)) {
-                        if (team.team.country && league.country && 
+                        if (team.team.country && league.country &&
                             team.team.country.toLowerCase().includes(league.country.toLowerCase())) {
                             state.currentLeague = id;
+                            localStorage.setItem('quantum_league', id);
                             $('leagueSelect').value = id;
                             updateLeagueInfo();
                             return;
@@ -1017,10 +1344,7 @@
             }
         }
 
-        // ================================================================
-        // КАЛЬКУЛЯТОР
-        // ================================================================
-
+        // ===== КАЛЬКУЛЯТОР =====
         function calculate() {
             const home = safeNum($('homeGoals').value);
             const away = safeNum($('awayGoals').value);
@@ -1063,9 +1387,7 @@
                 prob = Math.min(100, Math.max(0, Math.round(prob)));
                 result.value = both ? '✅ Да' : '❌ Нет';
                 result.prob = prob;
-                if (prob > 70) { result.advice = `✅ Высокая вероятность ${prob}% — ОЗ`; result.className = 'good'; }
-                else if (prob > 40) { result.advice = `🟡 Средняя вероятность ${prob}%`; result.className = 'warn'; }
-                else { result.advice = `🔴 Низкая вероятность ${prob}% — НЗ`; result.className = 'bad'; }
+                if (prob > 70) { result.advice = `✅ Высокая вероятность ${prob}% — ОЗ`; result.className = 'good'; } else if (prob > 40) { result.advice = `🟡 Средняя вероятность ${prob}%`; result.className = 'warn'; } else { result.advice = `🔴 Низкая вероятность ${prob}% — НЗ`; result.className = 'bad'; }
             } else if (mode === 'total') {
                 let expected = total;
                 if (total === 0) expected = Math.round(league.avgGoals || 2.5);
@@ -1094,7 +1416,7 @@
                         result.className = 'warn';
                     }
                 } else {
-                    result.advice = '📊 Введите линию БК для сравнения';
+                    result.advice = '📊 Линия БК загружается...';
                     result.className = 'info';
                 }
             } else if (mode === 'fora') {
@@ -1125,7 +1447,7 @@
                         result.className = 'warn';
                     }
                 } else {
-                    result.advice = '📊 Введите линию БК для сравнения';
+                    result.advice = '📊 Линия БК загружается...';
                     result.className = 'info';
                 }
             }
@@ -1147,6 +1469,7 @@
             if (mode === 'total' && hasBk && Math.abs(safeNum(result.value) - bkLine) > 1) confidence += 10;
             if (mode === 'fora' && hasBk && Math.abs(safeNum(result.value) - bkLine) > 0.5) confidence += 10;
             if (state.understatData) confidence += 5;
+            if (state.currentOdds) confidence += 5;
             confidence = Math.min(100, Math.max(0, Math.round(confidence)));
 
             $('confidenceLabel').textContent = confidence + '%';
@@ -1174,10 +1497,7 @@
             $('sumDisplay').textContent = total;
         }
 
-        // ================================================================
-        // УПРАВЛЕНИЕ СТАВКАМИ
-        // ================================================================
-
+        // ===== УПРАВЛЕНИЕ СТАВКАМИ =====
         function saveBet() {
             const home = safeNum($('homeGoals').value);
             const away = safeNum($('awayGoals').value);
@@ -1227,9 +1547,10 @@
             const b = state.bets[index];
             const newOutcome = prompt(`Исход для ${b.match}:\n1 - Выиграла\n2 - Проиграла\n3 - Неизвестно`, '3');
             if (newOutcome === null) return;
-            if (newOutcome === '1') { b.outcome = 'win'; b.resultText = '✅ Выигрыш'; }
-            else if (newOutcome === '2') { b.outcome = 'loss'; b.resultText = '❌ Проигрыш'; }
-            else { b.outcome = 'pending'; b.resultText = '⏳ Ожидание'; }
+            if (newOutcome === '1') { b.outcome = 'win';
+                b.resultText = '✅ Выигрыш'; } else if (newOutcome === '2') { b.outcome = 'loss';
+                b.resultText = '❌ Проигрыш'; } else { b.outcome = 'pending';
+                b.resultText = '⏳ Ожидание'; }
             localStorage.setItem('quantum_bets', JSON.stringify(state.bets));
             renderHistory();
             renderStats();
@@ -1257,10 +1578,7 @@
             location.reload();
         }
 
-        // ================================================================
-        // РЕНДЕРИНГ
-        // ================================================================
-
+        // ===== РЕНДЕРИНГ =====
         function renderHistory() {
             const list = $('historyList');
             if (state.bets.length === 0) {
@@ -1299,8 +1617,10 @@
             const losses = state.bets.filter(b => b.outcome === 'loss').length;
             const winRate = (wins + losses) > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
             const balance = wins - losses;
-            
-            let currentStreak = 0, maxStreak = 0, tempStreak = 0;
+
+            let currentStreak = 0,
+                maxStreak = 0,
+                tempStreak = 0;
             for (let i = state.bets.length - 1; i >= 0; i--) {
                 if (state.bets[i].outcome === 'win') {
                     tempStreak++;
@@ -1375,6 +1695,7 @@
             $('homeGoals').value = '0';
             $('awayGoals').value = '0';
             $('bkLine').value = '0';
+            $('bkLine').disabled = true;
             $('sumDisplay').textContent = '0';
             $('resValue1').textContent = '--';
             $('resValue2').textContent = '--';
@@ -1385,28 +1706,37 @@
             $('confidenceFill').style.width = '0%';
             $('h2hResults').innerHTML = '';
             $('h2hStatus').textContent = 'Введите команды и нажмите "Загрузить H2H"';
+            $('oddsDisplay').innerHTML = '<span style="font-size:11px;color:#888;">⏳ Загрузка линий...</span>';
             state.h2hData = null;
             state.understatData = null;
+            state.currentOdds = null;
             stopLiveUpdates();
             $('xgCard').style.display = 'none';
             $('aiCard').style.display = 'none';
             $('liveCard').style.display = 'none';
-            $('oddsDisplay').innerHTML = '<span style="font-size:11px;color:#888;">Выберите букмекера для загрузки линий</span>';
+            $('bkComment').textContent = '—';
+            $('bkComment').style.background = 'transparent';
+            const badge = $('searchBadge');
+            badge.style.display = 'none';
             showToast('🗑️ Очищено', 'info');
         }
 
         function toggleTheme() {
             document.body.classList.toggle('light');
-            document.querySelector('.header-actions button:first-child').textContent =
-                document.body.classList.contains('light') ? '☀️' : '🌙';
+            const btn = document.querySelector('.header-actions button:first-child');
+            btn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+
+            const toggleBtn = $('themeToggle');
+            if (toggleBtn) {
+                toggleBtn.textContent = document.body.classList.contains('light') ? '☀️ Светлая' : '🌙 Тёмная';
+                toggleBtn.classList.toggle('active');
+            }
         }
 
-        // ================================================================
-        // СОБЫТИЯ
-        // ================================================================
-
+        // ===== СОБЫТИЯ =====
         $('leagueSelect').onchange = function() {
             state.currentLeague = this.value;
+            localStorage.setItem('quantum_league', this.value);
             updateLeagueInfo();
             if (safeNum($('homeGoals').value) > 0 || safeNum($('awayGoals').value) > 0 || (state.h2hData && state.h2hData.length > 0)) {
                 calculate();
@@ -1433,10 +1763,17 @@
             }
         };
 
-        // ================================================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ================================================================
+        // Enter для поиска
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const active = document.querySelector('.screen.active');
+                if (active && active.id === 'searchScreen') {
+                    loadH2H();
+                }
+            }
+        });
 
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
         renderLeagues();
         renderHistory();
         renderStats();
@@ -1444,15 +1781,26 @@
         renderChart();
         renderInsights();
         updateSum();
+        renderSettingsLeagues();
+        updateAPIStatus();
 
-        console.log('⚛️ КВАНТУМ 2.0 — xG (Understat) + Odds (The Odds API) + Live (RSS)');
+        // Восстанавливаем тему
+        if (localStorage.getItem('quantum_theme') === 'light') {
+            document.body.classList.add('light');
+            const btn = document.querySelector('.header-actions button:first-child');
+            if (btn) btn.textContent = '☀️';
+            const toggleBtn = $('themeToggle');
+            if (toggleBtn) {
+                toggleBtn.textContent = '☀️ Светлая';
+                toggleBtn.classList.add('active');
+            }
+        }
+
+        console.log('⚛️ КВАНТУМ 2.0 — С НИЖНИМИ ВКЛАДКАМИ');
+        console.log('📱 4 вкладки: Анализ | Поиск | Статистика | Настройки');
         console.log('🔑 API ключи: Football=' + API_KEY_FOOTBALL + ', Odds=' + ODDS_API_KEY);
-        console.log('✅ Добавлено:');
-        console.log('  1️⃣ xG из Understat (парсинг)');
-        console.log('  2️⃣ Букмекерские линии (The Odds API)');
-        console.log('  3️⃣ Live данные (FlashScore + SofaScore RSS)');
-        console.log('  4️⃣ Минималистичный интерфейс');
-        console.log('📊 Все функции работают бесплатно!');
+        console.log('✅ Всё автоматически: xG | Odds | Live');
+        console.log('📊 Счётчики API в настройках');
     </script>
 </body>
 </html>
