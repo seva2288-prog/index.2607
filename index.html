@@ -287,7 +287,7 @@
                 <div class="confidence-bar"><div class="fill" id="confidenceFill" style="width:0%"></div></div>
             </div>
 
-            <!-- ===== AI КАРТОЧКА С УЛУЧШЕНИЯМИ ===== -->
+            <!-- ===== AI КАРТОЧКА ===== -->
             <div class="ai-card">
                 <div class="card-title">🧠 AI Прогноз (улучшенный)</div>
                 <button class="btn-ai" id="aiBtn" onclick="generateAIPrediction()">
@@ -305,7 +305,6 @@
                         </div>
                     </div>
 
-                    <!-- ФОРМА КОМАНД -->
                     <div class="section">
                         <span class="label">📋 Форма команд (последние 5):</span>
                         <div class="ai-form-grid" id="aiFormGrid">
@@ -320,19 +319,16 @@
                         </div>
                     </div>
 
-                    <!-- ДОМА / ВЫЕЗД -->
                     <div class="section">
                         <span class="label">🏟️ Дома/выезд:</span>
                         <span class="value" id="aiHomeAway">—</span>
                     </div>
 
-                    <!-- СИЛА СОПЕРНИКА -->
                     <div class="section">
                         <span class="label">⚡ Сила соперника:</span>
                         <span class="value" id="aiOpponentStrength">—</span>
                     </div>
 
-                    <!-- ВРЕМЯ ГОЛОВ -->
                     <div class="section">
                         <span class="label">⏰ Время голов:</span>
                         <span class="value" id="aiGoalTime">—</span>
@@ -412,8 +408,8 @@
             <div class="card">
                 <div class="card-title">🔍 Поиск H2H + Статистика</div>
                 <div class="input-row">
-                    <div class="field"><label>🏠 Хозяева</label><input type="text" id="homeTeamH2H" placeholder="Например: Real Madrid" /></div>
-                    <div class="field"><label>✈️ Гости</label><input type="text" id="awayTeamH2H" placeholder="Например: Barcelona" /></div>
+                    <div class="field"><label>🏠 Хозяева</label><input type="text" id="homeTeamH2H" placeholder="Например: Lokomotiv" /></div>
+                    <div class="field"><label>✈️ Гости</label><input type="text" id="awayTeamH2H" placeholder="Например: Akhmat" /></div>
                 </div>
                 <button class="btn-api" id="loadH2HBtn" onclick="loadH2H()">
                     <span id="loadBtnText">📊 Загрузить H2H</span>
@@ -539,13 +535,115 @@
 
     <script>
         // ================================================================
-        // КВАНТУМ 2.0 — УЛУЧШЕННЫЙ AI
-        // ВСЕ ДАННЫЕ БЕРУТСЯ ИЗ API-FOOTBALL
+        // КВАНТУМ 2.0 — УЛУЧШЕННЫЙ AI + КАРТА СООТВЕТСТВИЙ
         // ================================================================
 
         const API_KEY_FOOTBALL = '9d6bcbd63fcf1b201db31af076113339';
         const ODDS_API_KEY = '1a65316b9cba21b39cf5e6e008a3839e';
         const PROXY_URL = 'https://oz-proxy.onrender.com/api';
+
+        // ===== КАРТА СООТВЕТСТВИЙ ДЛЯ КОМАНД =====
+        const TEAM_ALIASES = {
+            // РПЛ
+            'lokomotiv': 'Lokomotiv Moscow',
+            'lokomotiv moscow': 'Lokomotiv Moscow',
+            'спартак': 'Spartak Moscow',
+            'spartak': 'Spartak Moscow',
+            'spartak moscow': 'Spartak Moscow',
+            'цска': 'CSKA Moscow',
+            'cska': 'CSKA Moscow',
+            'cska moscow': 'CSKA Moscow',
+            'динамо': 'Dynamo Moscow',
+            'dynamo': 'Dynamo Moscow',
+            'dynamo moscow': 'Dynamo Moscow',
+            'зенит': 'Zenit St Petersburg',
+            'zenit': 'Zenit St Petersburg',
+            'zenit st petersburg': 'Zenit St Petersburg',
+            'краснодар': 'Krasnodar',
+            'krasnodar': 'Krasnodar',
+            'ростов': 'Rostov',
+            'rostov': 'Rostov',
+            'ахмат': 'Akhmat Grozny',
+            'akhmat': 'Akhmat Grozny',
+            'akhmat grozny': 'Akhmat Grozny',
+            'урал': 'Ural',
+            'ural': 'Ural',
+            'крылья советов': 'Krylya Sovetov',
+            'krylya sovetov': 'Krylya Sovetov',
+            'оренбург': 'Orenburg',
+            'orenburg': 'Orenburg',
+            'сочи': 'Sochi',
+            'sochi': 'Sochi',
+            'рубин': 'Rubin Kazan',
+            'rubin': 'Rubin Kazan',
+            'rubin kazan': 'Rubin Kazan',
+            'балтика': 'Baltika',
+            'baltika': 'Baltika',
+            'факел': 'Fakel',
+            'fakel': 'Fakel',
+            'пари нн': 'Nizhny Novgorod',
+            'nizhny novgorod': 'Nizhny Novgorod',
+            
+            // Топ-5 лиг (европейские)
+            'real madrid': 'Real Madrid',
+            'realmadrid': 'Real Madrid',
+            'barcelona': 'Barcelona',
+            'barça': 'Barcelona',
+            'barca': 'Barcelona',
+            'atletico': 'Atletico Madrid',
+            'atletico madrid': 'Atletico Madrid',
+            'sevilla': 'Sevilla',
+            'valencia': 'Valencia',
+            'villareal': 'Villarreal',
+            'villarreal': 'Villarreal',
+            'manchester city': 'Manchester City',
+            'mancity': 'Manchester City',
+            'man city': 'Manchester City',
+            'manchester united': 'Manchester United',
+            'manutd': 'Manchester United',
+            'man united': 'Manchester United',
+            'liverpool': 'Liverpool',
+            'chelsea': 'Chelsea',
+            'arsenal': 'Arsenal',
+            'tottenham': 'Tottenham',
+            'newcastle': 'Newcastle',
+            'bayern': 'Bayern Munich',
+            'bayern munich': 'Bayern Munich',
+            'borussia': 'Borussia Dortmund',
+            'borussia dortmund': 'Borussia Dortmund',
+            'dortmund': 'Borussia Dortmund',
+            'leipzig': 'RB Leipzig',
+            'rb leipzig': 'RB Leipzig',
+            'leverkusen': 'Bayer Leverkusen',
+            'bayer leverkusen': 'Bayer Leverkusen',
+            'juventus': 'Juventus',
+            'milan': 'AC Milan',
+            'ac milan': 'AC Milan',
+            'inter': 'Inter Milan',
+            'inter milan': 'Inter Milan',
+            'napoli': 'Napoli',
+            'roma': 'Roma',
+            'lazio': 'Lazio',
+            'fiorentina': 'Fiorentina',
+            'psg': 'PSG',
+            'paris': 'PSG',
+            'paris saint-germain': 'PSG',
+            'marseille': 'Marseille',
+            'lyon': 'Lyon',
+            'monaco': 'Monaco',
+            'ajax': 'Ajax',
+            'psv': 'PSV',
+            'feyenoord': 'Feyenoord',
+            'benfica': 'Benfica',
+            'porto': 'Porto',
+            'sporting': 'Sporting CP',
+            'sporting cp': 'Sporting CP'
+        };
+
+        function normalizeTeamNameForAPI(input) {
+            const key = input.toLowerCase().trim();
+            return TEAM_ALIASES[key] || input;
+        }
 
         const LEAGUES = {
             '39': { name: '🏴 АПЛ', oz: 65, avgGoals: 2.8, country: 'Англия', understat: 'EPL' },
@@ -794,15 +892,23 @@
 
         // ================================================================
         // 🧠 УЛУЧШЕННЫЙ AI ПРОГНОЗ
-        // ДАННЫЕ: форма команд + дома/выезд + сила соперника + время голов
         // ================================================================
 
         async function generateAIPrediction() {
             const btn = $('aiBtn');
             const result = $('aiResult');
             
-            const homeTeam = $('homeTeamH2H').value.trim();
-            const awayTeam = $('awayTeamH2H').value.trim();
+            let homeTeam = $('homeTeamH2H').value.trim();
+            let awayTeam = $('awayTeamH2H').value.trim();
+            
+            // Нормализуем названия через карту соответствий
+            homeTeam = normalizeTeamNameForAPI(homeTeam);
+            awayTeam = normalizeTeamNameForAPI(awayTeam);
+            
+            // Обновляем поля с правильными названиями
+            $('homeTeamH2H').value = homeTeam;
+            $('awayTeamH2H').value = awayTeam;
+            
             const home = safeNum($('homeGoals').value);
             const away = safeNum($('awayGoals').value);
             const total = home + away;
@@ -820,19 +926,16 @@
             btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-color:#fff;border-top-color:transparent;"></span> Анализирую данные...';
             result.style.display = 'none';
 
-            // Загружаем дополнительные данные для улучшенного AI
             let teamForm = null;
             let standings = null;
             
             try {
-                // Ищем ID команд для получения формы и таблицы
                 const searchUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(homeTeam)}`;
                 const response = await fetch(searchUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                 if (response.ok) {
                     const data = await response.json();
                     if (data.response && data.response.length > 0) {
                         const homeId = data.response[0].team.id;
-                        // Ищем гостей
                         const searchUrl2 = `${PROXY_URL}?url=https://v3.football.api-sports.io/teams?search=${encodeURIComponent(awayTeam)}`;
                         const response2 = await fetch(searchUrl2, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                         if (response2.ok) {
@@ -840,14 +943,12 @@
                             if (data2.response && data2.response.length > 0) {
                                 const awayId = data2.response[0].team.id;
                                 
-                                // Загружаем форму команд (последние 5 матчей)
                                 const formUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/fixtures?team=${homeId}&last=5`;
                                 const formResponse = await fetch(formUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                                 if (formResponse.ok) {
                                     const formData = await formResponse.json();
                                     if (formData.response) {
                                         teamForm = { home: [], away: [] };
-                                        // Анализируем форму хозяев
                                         for (let match of formData.response) {
                                             if (match.teams.home.id === homeId) {
                                                 const goals = match.goals.home || 0;
@@ -865,7 +966,6 @@
                                                 teamForm.home.push({ result, goals, opponentGoals, opponent: match.teams.home.name });
                                             }
                                         }
-                                        // Загружаем форму гостей
                                         const formUrl2 = `${PROXY_URL}?url=https://v3.football.api-sports.io/fixtures?team=${awayId}&last=5`;
                                         const formResponse2 = await fetch(formUrl2, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
                                         if (formResponse2.ok) {
@@ -893,7 +993,6 @@
                                     }
                                 }
 
-                                // Загружаем таблицу лиги для силы соперника
                                 const leagueId = state.currentLeague;
                                 const standingsUrl = `${PROXY_URL}?url=https://v3.football.api-sports.io/standings?league=${leagueId}&season=2024`;
                                 const standingsResponse = await fetch(standingsUrl, { headers: { 'x-apisports-key': API_KEY_FOOTBALL } });
@@ -928,7 +1027,6 @@
                 let opponentStrengthStr = '—';
                 let goalTimeStr = '—';
 
-                // ===== АНАЛИЗ H2H =====
                 if (state.h2hData && state.h2hData.length > 0) {
                     const matches = state.h2hData;
                     const last5 = matches.slice(0, 5);
@@ -957,11 +1055,7 @@
                     else if (trendValue < -0.5) trend = 'Нисходящий 📉';
                     else trend = 'Стабильный ⚖️';
 
-                    // ===== АНАЛИЗ ВРЕМЕНИ ГОЛОВ =====
-                    const firstHalfGoals = matches.filter(m => {
-                        // Симулируем данные о времени голов (в реальном API есть events)
-                        return m.total > 0;
-                    });
+                    const firstHalfGoals = matches.filter(m => m.total > 0);
                     if (firstHalfGoals.length > 0) {
                         const avgFirstHalf = firstHalfGoals.reduce((sum, m) => sum + Math.round(m.total * 0.6), 0) / firstHalfGoals.length;
                         const avgSecondHalf = firstHalfGoals.reduce((sum, m) => sum + Math.round(m.total * 0.4), 0) / firstHalfGoals.length;
@@ -977,7 +1071,6 @@
                     }
                 }
 
-                // ===== АНАЛИЗ ФОРМЫ КОМАНД =====
                 if (teamForm && teamForm.home && teamForm.home.length > 0) {
                     const homeWins = teamForm.home.filter(m => m.result === 'win').length;
                     const homeLosses = teamForm.home.filter(m => m.result === 'loss').length;
@@ -989,14 +1082,12 @@
                     const awayDraws = teamForm.away.filter(m => m.result === 'draw').length;
                     awayFormStr = `${awayWins}W-${awayDraws}D-${awayLosses}L`;
                     
-                    // Корректировка прогноза на основе формы
                     if (homeWins >= 3) predictedHome += 1;
                     if (homeLosses >= 3) predictedHome = Math.max(0, predictedHome - 1);
                     if (awayWins >= 3) predictedAway += 1;
                     if (awayLosses >= 3) predictedAway = Math.max(0, predictedAway - 1);
                 }
 
-                // ===== АНАЛИЗ ДОМА/ВЫЕЗД =====
                 if (state.h2hData && state.h2hData.length > 0) {
                     const homeMatches = state.h2hData.filter(m => m.homeScore !== undefined);
                     const avgHomeGoals = homeMatches.reduce((sum, m) => sum + m.homeScore, 0) / homeMatches.length;
@@ -1013,7 +1104,6 @@
                     }
                 }
 
-                // ===== АНАЛИЗ СИЛЫ СОПЕРНИКА =====
                 if (standings && standings.length > 0) {
                     const homePos = standings.findIndex(s => s.team.name.toLowerCase().includes(homeTeam.toLowerCase()));
                     const awayPos = standings.findIndex(s => s.team.name.toLowerCase().includes(awayTeam.toLowerCase()));
@@ -1037,7 +1127,6 @@
                     opponentStrengthStr = '📊 Нет данных о позиции в таблице';
                 }
 
-                // ===== УЧЁТ xG =====
                 if (state.understatData) {
                     const xgTotal = parseFloat(state.understatData.homeXG) + parseFloat(state.understatData.awayXG);
                     avgTotal = (avgTotal + xgTotal) / 2;
@@ -1050,7 +1139,6 @@
                     }
                 }
 
-                // ===== КОРРЕКТИРОВКА СЧЁТА =====
                 const totalPredicted = predictedHome + predictedAway;
                 if (totalPredicted === 0) {
                     predictedHome = 1;
@@ -1085,13 +1173,11 @@
 
                 state.aiPredictedScore = { home: predictedHome, away: predictedAway };
 
-                // ПОДСТАВЛЯЕМ AI СЧЁТ
                 $('homeGoals').value = predictedHome;
                 $('awayGoals').value = predictedAway;
                 updateSum();
                 calculate();
 
-                // ВЫВОД ДАННЫХ В КАРТОЧКУ
                 $('aiHomeScore').textContent = predictedHome;
                 $('aiAwayScore').textContent = predictedAway;
                 $('aiHomeForm').textContent = homeFormStr;
@@ -1221,13 +1307,13 @@
                 const scriptMatch = html.match(/var datesData\s*=\s*(\{.*?\});/s);
                 if (!scriptMatch) throw new Error('No data found');
                 const data = JSON.parse(scriptMatch[1]);
-                const homeNorm = normalizeTeamName(homeTeam);
-                const awayNorm = normalizeTeamName(awayTeam);
+                const homeNorm = normalizeTeamNameForAPI(homeTeam).toLowerCase();
+                const awayNorm = normalizeTeamNameForAPI(awayTeam).toLowerCase();
                 let foundMatch = null;
                 for (let date of Object.values(data)) {
                     for (let match of date) {
-                        const h = normalizeTeamName(match.h.title);
-                        const a = normalizeTeamName(match.a.title);
+                        const h = match.h.title.toLowerCase();
+                        const a = match.a.title.toLowerCase();
                         if ((h.includes(homeNorm) || homeNorm.includes(h)) &&
                             (a.includes(awayNorm) || awayNorm.includes(a))) {
                             foundMatch = match;
@@ -1259,10 +1345,6 @@
             }
         }
 
-        function normalizeTeamName(name) {
-            return name.toLowerCase().replace(/ fc$| cf$| afc$| united| city| fc\./g, '').trim();
-        }
-
         function displayUnderstatXG(data) {
             if (!data) { $('xgCard').style.display = 'none'; return; }
             $('xgCard').style.display = 'block';
@@ -1281,8 +1363,10 @@
         // ================================================================
 
         async function loadOdds() {
-            const homeTeam = $('homeTeamH2H').value.trim();
-            const awayTeam = $('awayTeamH2H').value.trim();
+            let homeTeam = $('homeTeamH2H').value.trim();
+            let awayTeam = $('awayTeamH2H').value.trim();
+            homeTeam = normalizeTeamNameForAPI(homeTeam);
+            awayTeam = normalizeTeamNameForAPI(awayTeam);
             if (!homeTeam || !awayTeam) {
                 showToast('⚠️ Сначала загрузите команды!', 'error');
                 return;
@@ -1382,8 +1466,10 @@
         // ================================================================
 
         async function startLiveUpdates() {
-            const homeTeam = $('homeTeamH2H').value.trim();
-            const awayTeam = $('awayTeamH2H').value.trim();
+            let homeTeam = $('homeTeamH2H').value.trim();
+            let awayTeam = $('awayTeamH2H').value.trim();
+            homeTeam = normalizeTeamNameForAPI(homeTeam);
+            awayTeam = normalizeTeamNameForAPI(awayTeam);
             if (!homeTeam || !awayTeam) return;
             const card = $('liveCard');
             card.style.display = 'block';
@@ -1409,8 +1495,8 @@
                 const parser = new DOMParser();
                 const xml = parser.parseFromString(xmlText, 'text/xml');
                 const items = xml.querySelectorAll('item');
-                const homeNorm = normalizeTeamName(homeTeam);
-                const awayNorm = normalizeTeamName(awayTeam);
+                const homeNorm = normalizeTeamNameForAPI(homeTeam).toLowerCase();
+                const awayNorm = normalizeTeamNameForAPI(awayTeam).toLowerCase();
                 for (let item of items) {
                     const title = item.querySelector('title')?.textContent || '';
                     const desc = item.querySelector('description')?.textContent || '';
@@ -1445,8 +1531,8 @@
                 });
                 if (!response.ok) throw new Error('SofaScore loading failed');
                 const html = await response.text();
-                const homeNorm = normalizeTeamName(homeTeam);
-                const awayNorm = normalizeTeamName(awayTeam);
+                const homeNorm = normalizeTeamNameForAPI(homeTeam).toLowerCase();
+                const awayNorm = normalizeTeamNameForAPI(awayTeam).toLowerCase();
                 const pattern = new RegExp(`${homeNorm}.*?${awayNorm}.*?(\\d+)\\s*[:–-]\\s*(\\d+)`, 'i');
                 const match = html.match(pattern);
                 if (match) {
@@ -1545,8 +1631,17 @@
         // ================================================================
 
         async function loadH2H() {
-            const homeTeam = $('homeTeamH2H').value.trim();
-            const awayTeam = $('awayTeamH2H').value.trim();
+            let homeTeam = $('homeTeamH2H').value.trim();
+            let awayTeam = $('awayTeamH2H').value.trim();
+            
+            // Нормализуем названия через карту соответствий
+            homeTeam = normalizeTeamNameForAPI(homeTeam);
+            awayTeam = normalizeTeamNameForAPI(awayTeam);
+            
+            // Обновляем поля с правильными названиями
+            $('homeTeamH2H').value = homeTeam;
+            $('awayTeamH2H').value = awayTeam;
+            
             if (!homeTeam || !awayTeam) {
                 showToast('⚠️ Введите обе команды!', 'error');
                 return;
@@ -2122,13 +2217,14 @@
             }
         }
 
-        console.log('⚛️ КВАНТУМ 2.0 — УЛУЧШЕННЫЙ AI');
+        console.log('⚛️ КВАНТУМ 2.0 — УЛУЧШЕННЫЙ AI + КАРТА СООТВЕТСТВИЙ');
         console.log('🧠 AI анализирует:');
         console.log('  📋 Форму команд (последние 5 матчей)');
         console.log('  🏟️ Домашнюю/выездную статистику');
         console.log('  ⚡ Силу соперника (место в таблице)');
         console.log('  ⏰ Время голов (1-й и 2-й тайм)');
         console.log('  📊 xG и H2H');
+        console.log('✅ КАРТА СООТВЕТСТВИЙ: можно писать Lokomotiv вместо Lokomotiv Moscow');
         console.log('✅ Всё работает! Ничего не сломано!');
     </script>
 </body>
